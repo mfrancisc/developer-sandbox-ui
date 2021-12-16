@@ -7,13 +7,14 @@ import {
   FlexItem,
   Button,
 } from '@patternfly/react-core';
+import '../../Routes/SandboxPage/SandboxPage.scss';
 
 const TopBanner = () => {
   return (
     <>
-      <Card isPlain style={{ background: 'gray' }}>
+      <Card isPlain className="sbx-c-topBanner">
         <Flex style={{ marginTop: '16px', marginLeft: '16px' }}>
-          <CardTitle>
+          <CardTitle className="sbx-c-banner__text text--header">
             Get started with the Developer Sandbox for Red Hat OpenShift
           </CardTitle>
           <CardBody>
@@ -22,7 +23,7 @@ const TopBanner = () => {
               style={{ width: '60%' }}
               flex={{ default: 'flex_1' }}
             >
-              <FlexItem>
+              <FlexItem className="sbx-c-banner__text">
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
                 quis vulputate massa, et gravida magna. Morbi sodales ante est,
                 condimentum mattis lacus interdum id. Nam euismod ligula sit

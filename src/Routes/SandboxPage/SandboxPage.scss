@@ -6,3 +6,69 @@
   background-color: var(--pf-global--BackgroundColor--200);
   height: 100%;
 }
+
+.sbx-c-main-descriptionCard {
+  margin-top: var(--pf-global--spacer--md);
+  margin-bottom: var(--pf-global--spacer--md);
+  margin-left: var(--pf-global--spacer--lg);
+  margin-right: var(--pf-global--spacer--lg);
+  padding: 0px;
+  gap: 64px;
+}
+
+.sbx-c-purchaseCard {
+  padding-top: var(--pf-global--spacer--md);
+  
+}
+
+.sbx-c-card {
+  padding: 0px;
+}
+
+.sbx-c-card__text {
+  color: var(--pf-global--Color--200);
+
+  &.text--header {
+    color: var(--pf-global--Color--100);
+    font-weight: bold;
+    font-size: large;
+  }
+}
+
+.sbx-c-description {
+  // margin-top: var(--pf-global--spacer--md);
+  margin-bottom: var(--pf-global--spacer--md);
+}
+
+.sbx-c-banner__text {
+  color: var(--pf-global--palette--black-300);
+
+  &.text--header {
+    color: var(--pf-global--BackgroundColor--200);
+    font-weight: bold;
+    font-size: x-large;
+  }
+}
+
+.sbx-c-topBanner {
+  color: var(--pf-global--palette--white);
+  background-image: url(https://raw.githubusercontent.com/RedHatInsights/frontend-assets/9a08a79fddd4a15dc075b33ea849f212c15ec23c/src/background-images/fedora-background.svg);
+  background-color: var(--pf-global--BackgroundColor--dark-300);
+  background-size: 550px 600px;
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.sbx-c-main-btn {
+  margin-top: var(--pf-global--spacer--xs);
+  margin-left: var(--pf-global--spacer--lg);
+  width: 180px;
+
+  &.btn--purchase {
+    background-color: var(--pf-global--danger-color--100);
+  }
+}
+
+.sbx-c-main-descriptionImg {
+  margin-top: 8px;
+}
