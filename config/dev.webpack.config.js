@@ -7,7 +7,7 @@ const { config: webpackConfig, plugins } = config({
   debug: true,
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
   useProxy: true,
-  appUrl: process.env.BETA ? '/beta/openshift/sandbox' : '/openshift/sanbox',
+  appUrl: process.env.BETA ? '/beta/openshift/sandbox' : '/openshift/sandbox',
   env: process.env.BETA ? 'ci-beta' : 'ci-stable',
   standalone: Boolean(process.env.STANDALONE),
 });

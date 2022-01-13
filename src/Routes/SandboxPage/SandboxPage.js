@@ -3,15 +3,18 @@ import React from 'react';
 import DescriptionCard from '../../Components/PresentationalCard/DescriptionCard';
 import PurchaseCard from '../../Components/PurchaseCard/PurchaseCard';
 import TopBanner from '../../Components/TopBanner/TopBanner';
+import Main from '@redhat-cloud-services/frontend-components/Main';
 import './SandboxPage.scss';
 
 const SandboxPage = () => {
   return (
-    <div className="sbx-c-main">
+    <>
       <TopBanner className="sbx-c-topBanner" />
-      <DescriptionCard className="ins-sa-card" />
-      <PurchaseCard className="ins-sa-card" />
-    </div>
+      <Main className="sbx-c-main">
+        <DescriptionCard className="ins-sa-card" />
+        <PurchaseCard className="ins-sa-card" />
+      </Main>
+    </>
   );
 };
 

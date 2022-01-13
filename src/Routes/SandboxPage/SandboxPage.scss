@@ -5,24 +5,26 @@
 .sbx-c-main {
   background-color: var(--pf-global--BackgroundColor--200);
   height: 100%;
+
+  .sbx-c-main-descriptionCard + .sbx-c-main-descriptionCard{ margin-top: 16px }; 
 }
 
 .sbx-c-main-descriptionCard {
-  margin-top: var(--pf-global--spacer--md);
-  margin-bottom: var(--pf-global--spacer--md);
-  margin-left: var(--pf-global--spacer--lg);
-  margin-right: var(--pf-global--spacer--lg);
-  padding: 0px;
-  gap: 64px;
+  // margin-top: var(--pf-global--spacer--md);
+  // margin-bottom: var(--pf-global--spacer--md);
+  // margin-left: var(--pf-global--spacer--lg);
+  // margin-right: var(--pf-global--spacer--lg);
+  // padding: 0px;
+  // gap: 64px;
 }
 
 .sbx-c-purchaseCard {
   padding-top: var(--pf-global--spacer--md);
-  
+
 }
 
 .sbx-c-card {
-  padding: 0px;
+  margin: 16px;
 }
 
 .sbx-c-card__text {
@@ -60,8 +62,8 @@
 }
 
 .sbx-c-main-btn {
-  margin-top: var(--pf-global--spacer--xs);
-  margin-left: var(--pf-global--spacer--lg);
+  // margin-top: var(--pf-global--spacer--xs);
+  // margin-left: var(--pf-global--spacer--lg);
   width: 180px;
 
   &.btn--purchase {
