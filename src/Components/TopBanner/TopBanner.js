@@ -12,9 +12,9 @@ import '../../Routes/SandboxPage/SandboxPage.scss';
 const TopBanner = () => {
   return (
     <>
-      <Card isPlain className="sbx-c-topBanner">
-        <Flex style={{ marginTop: '16px', marginLeft: '16px' }}>
-          <CardTitle className="sbx-c-banner__text text--header">
+      <Card isPlain className="sbx-c-banner">
+        <Flex>
+          <CardTitle className="sbx-c-banner__header">
             Get started with the Developer Sandbox for Red Hat OpenShift
           </CardTitle>
           <CardBody>
@@ -24,11 +24,10 @@ const TopBanner = () => {
               flex={{ default: 'flex_1' }}
             >
               <FlexItem className="sbx-c-banner__text">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus
-                quis vulputate massa, et gravida magna. Morbi sodales ante est,
-                condimentum mattis lacus interdum id. Nam euismod ligula sit
-                amet pretium imperdiet. Pellentesque faucibus nisi ex,
-                consectetur ullamcorper elit convallis ac.
+                If you're exploring how to run your code in containers, our
+                Developer Sandbox makes it simple. Not only can you easily
+                deploy your application from a Git repo, youcan also set up a
+                cloude IDE for your entire team.
               </FlexItem>
               <FlexItem style={{ marginTop: '32px' }}>
                 <Button isLarge>

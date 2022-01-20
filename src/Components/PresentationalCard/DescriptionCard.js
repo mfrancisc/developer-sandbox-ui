@@ -11,20 +11,23 @@ import {
 const DescriptionCard = () => {
   return (
     <>
-      <Card className="sbx-c-main-descriptionCard">
-        <CardBody className="sbx-c-card">
-          <Grid hasGutter className="sbx-c-main-descriptionCard">
+      <Card className="sbx-c-card--main">
+        <CardBody>
+          <Grid hasGutter>
             <GridItem sm={7} xs={5}>
               <Flex direction={{ default: 'column' }}>
-                <FlexItem className="sbx-c-card__text text--header">
+                <FlexItem className="sbx-c-card__header">
                   What is the Sandbox?
                 </FlexItem>
                 <FlexItem className="sbx-c-card__text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Vivamus quis vulputate massa, et gravida magna. Morbi sodales
-                  ante est, condimentum mattis lacus interdum id. Nam euismod
-                  ligula sit amet pretium imperdiet. Pellentesque faucibus nisi
-                  ex, consectetur ullamcorper elit convallis ac.
+                  The sandbox provides you with a private OpenShift environment
+                  in a shared, multi-tenant OpenShift cluster that is
+                  pre-configured with a set of developer tools. You can easily
+                  crete containers from your source code or Dockerfile, build
+                  new applications using the samples and stacks provided, add
+                  services such as databases from our templates catalog, deploy
+                  Helm charts, and much more. Discover the rich capabilities of
+                  the full developer experience on OpneShift with the sandbox.
                 </FlexItem>
               </Flex>
             </GridItem>

@@ -13,24 +13,18 @@ import {
 const PurchaseCard = () => {
   return (
     <>
-      <Card className="sbx-c-main-descriptionCard">
+      <Card className="sbx-c-card--main">
         <CardBody>
           <Grid hasGutter className="sbx-c-purchaseCard">
             <GridItem span={7}>
-              <Flex
-                direction={{ defautl: 'column' }}
-                flex={{ default: 'flex_1' }}
-              >
-                <FlexItem className="sbx-c-card__text text--header">
+              <Flex direction={{ defautl: 'column' }}>
+                <FlexItem className="sbx-c-card__header pf-u-mb-sm">
                   Start your OpenShift experience with Red Hat OpenShift
                   Dedicated
                 </FlexItem>
-                <FlexItem className="sbx-c-card__text">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Vivamus quis vulputate massa, et gravida magna. Morbi sodales
-                  ante est, condimentum mattis lacus interdum id. Nam euismod
-                  ligula sit amet pretium imperdiet. Pellentesque faucibus nisi
-                  ex, consectetur ullamcorper elit convallis ac.
+                <FlexItem className="sbx-c-card__text pf-u-mb-lg">
+                  Managed Red Hat OpenShift clusters on AWS or Google Cloud
+                  backed by 24x7 Premium support and a 99.95% uptime SLA.
                 </FlexItem>
                 <FlexItem>
                   <img
@@ -49,11 +43,7 @@ const PurchaseCard = () => {
                   </Button>
                 </FlexItem>
                 <FlexItem>
-                  <Button
-                    className="sbx-c-main-btn btn--outline"
-                    variant="tertiary"
-                    isLarge
-                  >
+                  <Button className="sbx-c-main-btn" variant="tertiary" isLarge>
                     Free Trial
                   </Button>
                 </FlexItem>

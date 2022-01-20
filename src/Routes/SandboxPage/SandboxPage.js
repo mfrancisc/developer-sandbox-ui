@@ -11,8 +11,8 @@ const SandboxPage = () => {
     <>
       <TopBanner className="sbx-c-topBanner" />
       <Main className="sbx-c-main">
-        <DescriptionCard className="ins-sa-card" />
-        <PurchaseCard className="ins-sa-card" />
+        <DescriptionCard className="sbx-c-card" />
+        <PurchaseCard className="sbx-c-card" />
       </Main>
     </>
   );

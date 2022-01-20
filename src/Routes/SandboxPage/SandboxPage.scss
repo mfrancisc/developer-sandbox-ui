@@ -1,70 +1,56 @@
-.ins-sa-card {
-  margin: 12px;  
-}
-
 .sbx-c-main {
   background-color: var(--pf-global--BackgroundColor--200);
   height: 100%;
-
-  .sbx-c-main-descriptionCard + .sbx-c-main-descriptionCard{ margin-top: 16px }; 
 }
 
-.sbx-c-main-descriptionCard {
-  // margin-top: var(--pf-global--spacer--md);
-  // margin-bottom: var(--pf-global--spacer--md);
-  // margin-left: var(--pf-global--spacer--lg);
-  // margin-right: var(--pf-global--spacer--lg);
-  // padding: 0px;
-  // gap: 64px;
-}
-
-.sbx-c-purchaseCard {
-  padding-top: var(--pf-global--spacer--md);
-
+.pf-c-page__main-section {
+  padding-left: var(--pf-global--spacer--2xl);
+  padding-right: var(--pf-global--spacer--2xl);
+  padding-top: 0px;
 }
 
 .sbx-c-card {
-  margin: 16px;
-}
+  &__text {
+    color: var(--pf-global--Color--200);
+  }
 
-.sbx-c-card__text {
-  color: var(--pf-global--Color--200);
-
-  &.text--header {
+  &__header {
     color: var(--pf-global--Color--100);
     font-weight: bold;
-    font-size: large;
+    font-size: var(--pf-global--FontSize--xl);
+  }
+
+  &__button-container {
+    width: 40%;
+  }
+
+  &--main {
+    margin-top: var(--pf-global--spacer--xl);
   }
 }
 
-.sbx-c-description {
-  // margin-top: var(--pf-global--spacer--md);
-  margin-bottom: var(--pf-global--spacer--md);
-}
-
-.sbx-c-banner__text {
-  color: var(--pf-global--palette--black-300);
-
-  &.text--header {
-    color: var(--pf-global--BackgroundColor--200);
-    font-weight: bold;
-    font-size: x-large;
-  }
-}
-
-.sbx-c-topBanner {
+.sbx-c-banner {
   color: var(--pf-global--palette--white);
+  background-size: 550px 600px;
   background-image: url(https://raw.githubusercontent.com/RedHatInsights/frontend-assets/9a08a79fddd4a15dc075b33ea849f212c15ec23c/src/background-images/fedora-background.svg);
   background-color: var(--pf-global--BackgroundColor--dark-300);
-  background-size: 550px 600px;
   background-repeat: no-repeat;
   background-position: right;
+  padding-left: var(--pf-global--spacer--lg);
+
+  &__header {
+    color: var(--pf-global--palette--white);
+    font-weight: bold;
+    font-size: var(--pf-global--FontSize--2xl);
+  }
+
+  &__text {
+    color: var(--pf-global--palette--black-300);
+  }
 }
 
 .sbx-c-main-btn {
-  // margin-top: var(--pf-global--spacer--xs);
-  // margin-left: var(--pf-global--spacer--lg);
-  width: 180px;
+  width: 190px;
 
   &.btn--purchase {
     background-color: var(--pf-global--danger-color--100);
@@ -72,5 +58,5 @@
 }
 
 .sbx-c-main-descriptionImg {
-  margin-top: 8px;
+  margin-top: var(--pf-global--spacer--sm);
 }
