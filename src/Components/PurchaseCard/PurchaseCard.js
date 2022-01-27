@@ -1,52 +1,51 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Button,
   Card,
   CardBody,
-  Grid,
-  GridItem,
   Flex,
   FlexItem,
-  Button,
+  Grid,
+  GridItem,
+  Text,
+  TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
 
 const PurchaseCard = () => {
   return (
     <>
-      <Card className="sbx-c-card--main">
+      <Card>
         <CardBody>
-          <Grid hasGutter className="sbx-c-purchaseCard">
-            <GridItem span={7}>
-              <Flex direction={{ defautl: 'column' }}>
-                <FlexItem className="sbx-c-card__header pf-u-mb-sm">
+          <Grid>
+            <GridItem md={6} lg={7} className="pf-u-pr-2xl-on-md">
+              <TextContent>
+                <Text component={TextVariants.h2} className="pf-u-mb-md">
                   Start your OpenShift experience with Red Hat OpenShift
                   Dedicated
-                </FlexItem>
-                <FlexItem className="sbx-c-card__text pf-u-mb-lg">
+                </Text>
+                <Text className="pf-u-color-200">
                   Managed Red Hat OpenShift clusters on AWS or Google Cloud
                   backed by 24x7 Premium support and a 99.95% uptime SLA.
-                </FlexItem>
-                <FlexItem>
-                  <img
-                    src="https://raw.githubusercontent.com/RedHatInsights/frontend-assets/9a08a79fddd4a15dc075b33ea849f212c15ec23c/src/console-logos/Logo-Red_Hat-Hybrid_Cloud_Console-B-Standard-RGB.svg"
-                    height="256px"
-                    width="128px"
-                  />
-                </FlexItem>
-              </Flex>
+                </Text>
+              </TextContent>
             </GridItem>
-            <GridItem span={5}>
-              <Flex direction={{ default: 'row' }} flex={{ default: 'flex_1' }}>
-                <FlexItem>
-                  <Button isLarge className="sbx-c-main-btn btn--purchase">
-                    Purchase
-                  </Button>
-                </FlexItem>
-                <FlexItem>
-                  <Button className="sbx-c-main-btn" variant="tertiary" isLarge>
-                    Free Trial
-                  </Button>
-                </FlexItem>
+            <GridItem md={6} lg={5}>
+              <Flex className="pf-u-flex-direction-column pf-u-flex-direction-row-on-md pf-u-mt-lg pf-u-mt-0-on-md">
+                <Button
+                  isLarge
+                  className="pf-m-danger pf-u-flex-grow-1 pf-u-mb-md"
+                >
+                  Purchase
+                </Button>
+                <Button
+                  isLarge
+                  variant="tertiary"
+                  className="pf-u-flex-grow-1 pf-u-mb-md"
+                >
+                  Free Trial
+                </Button>
               </Flex>
             </GridItem>
           </Grid>

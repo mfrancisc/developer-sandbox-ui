@@ -1,62 +1,25 @@
-.sbx-c-main {
-  background-color: var(--pf-global--BackgroundColor--200);
-  height: 100%;
-}
-
-.pf-c-page__main-section {
-  padding-left: var(--pf-global--spacer--2xl);
-  padding-right: var(--pf-global--spacer--2xl);
-  padding-top: 0px;
-}
-
-.sbx-c-card {
-  &__text {
-    color: var(--pf-global--Color--200);
-  }
-
-  &__header {
-    color: var(--pf-global--Color--100);
-    font-weight: bold;
-    font-size: var(--pf-global--FontSize--xl);
-  }
-
-  &__button-container {
-    width: 40%;
-  }
-
-  &--main {
-    margin-top: var(--pf-global--spacer--xl);
+.sbx-c-card-banner {
+  background-image: url(https://console.redhat.com/apps/frontend-assets/background-images/developer-sandbox-ui/Containers-pattern-Blog-hero.png);
+  background-color: var(--pf-global--BackgroundColor--dark-100);
+  background-size: cover;
+  .pf-c-button {
+    text-align: left;
+    white-space: normal;
   }
 }
 
-.sbx-c-banner {
-  color: var(--pf-global--palette--white);
-  background-size: 550px 600px;
-  background-image: url(https://raw.githubusercontent.com/RedHatInsights/frontend-assets/9a08a79fddd4a15dc075b33ea849f212c15ec23c/src/background-images/fedora-background.svg);
-  background-color: var(--pf-global--BackgroundColor--dark-300);
-  background-repeat: no-repeat;
-  background-position: right;
-  padding-left: var(--pf-global--spacer--lg);
-
-  &__header {
-    color: var(--pf-global--palette--white);
-    font-weight: bold;
-    font-size: var(--pf-global--FontSize--2xl);
-  }
-
-  &__text {
-    color: var(--pf-global--palette--black-300);
-  }
+.sbx-c-page__main-section {
+  max-width: 1250px;
 }
 
-.sbx-c-main-btn {
-  width: 190px;
-
-  &.btn--purchase {
-    background-color: var(--pf-global--danger-color--100);
-  }
+.sbx-sandbox-graphic {
+  min-height: 100%;
+  object-fit: cover;
+  width: 100%;
 }
 
-.sbx-c-main-descriptionImg {
-  margin-top: var(--pf-global--spacer--sm);
+@media screen and (max-width: 768px) {
+  .sbx-c-banner {
+    background-image: none;
+  }
 }

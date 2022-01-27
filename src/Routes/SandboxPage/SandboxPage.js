@@ -9,10 +9,10 @@ import './SandboxPage.scss';
 const SandboxPage = () => {
   return (
     <>
-      <TopBanner className="sbx-c-topBanner" />
-      <Main className="sbx-c-main">
-        <DescriptionCard className="sbx-c-card" />
-        <PurchaseCard className="sbx-c-card" />
+      <TopBanner />
+      <Main className="sbx-c-page__main-section pf-u-pt-xl pf-u-px-2xl pf-u-pb-2xl">
+        <DescriptionCard />
+        <PurchaseCard />
       </Main>
     </>
   );

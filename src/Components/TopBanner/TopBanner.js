@@ -1,42 +1,34 @@
 import React from 'react';
 import {
+  Button,
   Card,
   CardBody,
-  CardTitle,
-  Flex,
-  FlexItem,
-  Button,
+  Text,
+  TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
 import '../../Routes/SandboxPage/SandboxPage.scss';
 
 const TopBanner = () => {
   return (
     <>
-      <Card isPlain className="sbx-c-banner">
-        <Flex>
-          <CardTitle className="sbx-c-banner__header">
-            Get started with the Developer Sandbox for Red Hat OpenShift
-          </CardTitle>
-          <CardBody>
-            <Flex
-              direction={{ default: 'column', lg: 'row' }}
-              style={{ width: '60%' }}
-              flex={{ default: 'flex_1' }}
-            >
-              <FlexItem className="sbx-c-banner__text">
-                If you're exploring how to run your code in containers, our
-                Developer Sandbox makes it simple. Not only can you easily
-                deploy your application from a Git repo, youcan also set up a
-                cloude IDE for your entire team.
-              </FlexItem>
-              <FlexItem style={{ marginTop: '32px' }}>
-                <Button isLarge>
-                  Learn more about Sandbox for Red Hat OpenShift
-                </Button>
-              </FlexItem>
-            </Flex>
-          </CardBody>
-        </Flex>
+      <Card className="sbx-c-card-banner pf-u-px-lg pf-u-pt-0 pf-u-pb-md" isPlain>
+        <CardBody className="pf-u-w-66-on-md">
+          <TextContent>
+            <Text component={TextVariants.h1} className="pf-u-color-light-100">
+              Get started with the Developer Sandbox for Red Hat OpenShift
+            </Text>
+            <Text className="pf-u-color-light-200">
+              If you're exploring how to run your code in containers, our
+              Developer Sandbox makes it simple. Not only can you easily deploy
+              your application from a Git repo, youcan also set up a cloude IDE
+              for your entire team.
+            </Text>
+          </TextContent>
+          <Button className="pf-u-mt-2xl" isLarge>
+            Learn more about Sandbox for Red Hat OpenShift
+          </Button>
+        </CardBody>
       </Card>
     </>
   );
