@@ -4,37 +4,36 @@ import {
   CardBody,
   Grid,
   GridItem,
-  Flex,
-  FlexItem,
+  TextContent,
+  Text,
+  TextVariants,
 } from '@patternfly/react-core';
 
 const DescriptionCard = () => {
   return (
     <>
-      <Card className="sbx-c-card--main">
+      <Card className="pf-u-mb-xl">
         <CardBody>
-          <Grid hasGutter>
-            <GridItem sm={7} xs={5}>
-              <Flex direction={{ default: 'column' }}>
-                <FlexItem className="sbx-c-card__header">
-                  What is the Sandbox?
-                </FlexItem>
-                <FlexItem className="sbx-c-card__text">
-                  The sandbox provides you with a private OpenShift environment
-                  in a shared, multi-tenant OpenShift cluster that is
-                  pre-configured with a set of developer tools. You can easily
-                  crete containers from your source code or Dockerfile, build
-                  new applications using the samples and stacks provided, add
-                  services such as databases from our templates catalog, deploy
-                  Helm charts, and much more. Discover the rich capabilities of
-                  the full developer experience on OpneShift with the sandbox.
-                </FlexItem>
-              </Flex>
+          <Grid>
+            <GridItem md={6} lg={7} component={TextContent} className="pf-u-pr-2xl-on-md">
+              <Text component={TextVariants.h2} className="pf-u-mb-md">
+                What is the Sandbox?
+              </Text>
+              <Text component={TextVariants.p} className="pf-u-color-200">
+                The sandbox provides you with a private OpenShift environment
+                in a shared, multi-tenant OpenShift cluster that is
+                pre-configured with a set of developer tools. You can easily
+                crete containers from your source code or Dockerfile, build
+                new applications using the samples and stacks provided, add
+                services such as databases from our templates catalog, deploy
+                Helm charts, and much more. Discover the rich capabilities of
+                the full developer experience on OpneShift with the sandbox.
+              </Text>
             </GridItem>
-            <GridItem sm={5} xs={7}>
+            <GridItem md={6} lg={5}>
               <img
-                src="https://raw.githubusercontent.com/RedHatInsights/frontend-assets/9a08a79fddd4a15dc075b33ea849f212c15ec23c/src/background-images/fedora-background.svg"
-                className="sbx-c-main-descriptionImg"
+                className="sbx-sandbox-graphic pf-u-pt-xl pf-u-pt-0-on-md"
+                src="https://console.redhat.com/apps/frontend-assets/background-images/developer-sandbox-ui/sandbox-diagram.png"
               />
             </GridItem>
           </Grid>
