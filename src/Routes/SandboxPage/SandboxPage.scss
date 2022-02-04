@@ -8,7 +8,7 @@
   }
 }
 
-.sbx-c-page__main-section {
+.pf-c-page__main-section {
   max-width: 1250px;
 }
 
@@ -18,8 +18,6 @@
   width: 100%;
 }
 
-@media screen and (max-width: 768px) {
-  .sbx-c-banner {
-    background-image: none;
-  }
+img.sbx-osd-logo {
+  width: 130px;
 }
