@@ -20,40 +20,37 @@ const PurchaseCard = () => {
           <Grid>
             <GridItem
               md={6}
-              lg={7}
+              lg={8}
               component={TextContent}
-              className="pf-u-pr-2xl-on-md"
+              className="pf-u-pr-2xl"
             >
               <Text component={TextVariants.h2} className="pf-u-mb-md">
-                Start your OpenShift experience with Red Hat OpenShift Dedicated
+                Continue your experience with Red Hat OpenShift service on AWS
               </Text>
-              <Text component={TextVariants.p} className="pf-u-color-200">
-                Managed Red Hat OpenShift clusters on AWS or Google Cloud backed
-                by 24x7 Premium support and a 99.95% uptime SLA.
+              <Text
+                component={TextVariants.p}
+                className="pf-u-color-200 pf-u-mb-lg"
+              >
+                Get started with your own dedicated cluster on AWS, managed by
+                Red Hat and Amazon, and even move your application from Dev
+                Sandbox.
               </Text>
-            </GridItem>
-            <GridItem md={6} lg={5}>
               <Flex className="pf-u-flex-direction-column pf-u-flex-direction-row-on-md pf-u-mt-lg pf-u-mt-0-on-md">
                 <Button
-                  className="pf-m-danger pf-u-flex-grow-1 pf-u-mb-md"
+                  variant="secondary"
+                  className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
                   isLarge
                 >
-                  Purchase
+                  Get Started
                 </Button>
                 <Button
                   variant="tertiary"
-                  className="pf-u-flex-grow-1 pf-u-mb-md"
+                  className="sbx-c-purchase-card__button pf-u-flex-grow-1"
                   isLarge
                 >
-                  Free Trial
+                  Learn how to move your application
                 </Button>
               </Flex>
-            </GridItem>
-            <GridItem className="pf-u-mt-lg">
-              <img
-                className="sbx-osd-logo"
-                src="https://console.redhat.com/apps/frontend-assets/background-images/developer-sandbox-ui/Logo-Red_Hat-OpenShift_Dedicated-A-Standard-RGB.png"
-              />
             </GridItem>
           </Grid>
         </CardBody>

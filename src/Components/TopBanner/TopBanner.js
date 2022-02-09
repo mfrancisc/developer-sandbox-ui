@@ -13,19 +13,24 @@ const TopBanner = () => {
   return (
     <>
       <Card
-        className="sbx-c-card-banner pf-u-px-lg pf-u-pt-0 pf-u-pb-md"
+        className="sbx-c-card-banner pf-u-px-lg pf-u-pt-sm pf-u-pb-sm"
         isPlain
       >
         <CardBody className="pf-u-w-66-on-md">
           <TextContent>
-            <Text component={TextVariants.h1} className="pf-u-color-light-100">
+            <Text
+              component={TextVariants.h1}
+              className="pf-u-color-light-100 pf-u-mb-md"
+            >
               Get started with the Developer Sandbox for Red Hat OpenShift
             </Text>
             <Text className="pf-u-color-light-200">
-              If you&#39;re exploring how to run your code in containers, our
-              Developer Sandbox makes it simple. Not only can you easily deploy
-              your application from a Git repo, youcan also set up a cloude IDE
-              for your entire team.
+              If you are exploring how to run your code as containers in
+              OpenShift, our free Developer Sandbox instantly gives you a way to
+              try it out. Not only can you easily deploy code from your Git
+              repo, you can leverage our samples, run a database, connect to Red
+              Hat Managed Application Services, and edit code directly with
+              pre-configured cloud IDE.
             </Text>
           </TextContent>
           <Button className="pf-u-mt-2xl" isLarge>
