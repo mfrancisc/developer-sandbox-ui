@@ -45,7 +45,7 @@ const PurchaseCard = () => {
                 </Button>
                 <Button
                   variant="tertiary"
-                  className="sbx-c-purchase-card__button pf-u-flex-grow-1"
+                  className="sbx-c-card__button pf-u-flex-grow-1"
                   isLarge
                 >
                   Learn how to move your application

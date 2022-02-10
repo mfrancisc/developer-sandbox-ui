@@ -43,11 +43,19 @@ const DescriptionCard = () => {
                 <Button
                   variant="secondary"
                   className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
+                  onClick={() =>
+                    (window.location.href =
+                      'https://developers.redhat.com/developer-sandbox')
+                  }
                   isLarge
                 >
                   Learn more
                 </Button>
-                <Button variant="tertiary" className="pf-u-flex-grow-1" isLarge>
+                <Button
+                  variant="tertiary"
+                  className="sbx-c-card__button pf-u-flex-grow-1"
+                  isLarge
+                >
                   Try it/Launch Sandbox
                 </Button>
               </Flex>
