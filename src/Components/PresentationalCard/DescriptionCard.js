@@ -42,11 +42,9 @@ const DescriptionCard = () => {
               <Flex className="pf-u-flex-direction-column pf-u-flex-direction-row-on-md pf-u-mt-xl pf-u-mt-0-on-md">
                 <Button
                   variant="secondary"
+                  component="a"
                   className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
-                  onClick={() =>
-                    (window.location.href =
-                      'https://developers.redhat.com/developer-sandbox')
-                  }
+                  href="https://developers.redhat.com/developer-sandbox"
                   isLarge
                 >
                   Learn more
@@ -57,6 +55,7 @@ const DescriptionCard = () => {
                   isLarge
                 >
                   Try it/Launch Sandbox
+                  {/* This button is pending chage. We are still waiting for the correct link that is supposed to go here. */}
                 </Button>
               </Flex>
             </GridItem>

@@ -38,6 +38,8 @@ const PurchaseCard = () => {
               <Flex className="pf-u-flex-direction-column pf-u-flex-direction-row-on-md pf-u-mt-lg pf-u-mt-0-on-md">
                 <Button
                   variant="secondary"
+                  component="a"
+                  href="https://console.redhat.com/beta/openshift/create/rosa/welcome"
                   className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
                   isLarge
                 >
@@ -45,7 +47,9 @@ const PurchaseCard = () => {
                 </Button>
                 <Button
                   variant="tertiary"
+                  component="a"
                   className="sbx-c-card__button pf-u-flex-grow-1"
+                  href="https://developers.redhat.com/developer-sandbox/get-started"
                   isLarge
                 >
                   Learn how to move your application
