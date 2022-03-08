@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
   Button,
   Card,
@@ -13,8 +14,10 @@ import {
 } from '@patternfly/react-core';
 
 const PurchaseCard = () => {
+  const push = useChrome(({ chromeHistory: { push } = {} }) => push);
+
   return (
-    <>
+    <React.Fragment>
       <Card>
         <CardBody>
           <Grid>
@@ -38,8 +41,10 @@ const PurchaseCard = () => {
               <Flex className="pf-u-flex-direction-column pf-u-flex-direction-row-on-md pf-u-mt-lg pf-u-mt-0-on-md">
                 <Button
                   variant="secondary"
-                  component="a"
-                  href="https://console.redhat.com/beta/openshift/create/rosa/welcome"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    push('./create/rosa/welcome');
+                  }}
                   className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
                   isLarge
                 >
@@ -59,7 +64,7 @@ const PurchaseCard = () => {
           </Grid>
         </CardBody>
       </Card>
-    </>
+    </React.Fragment>
   );
 };
 
