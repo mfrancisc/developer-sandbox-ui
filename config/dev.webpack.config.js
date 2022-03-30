@@ -7,9 +7,11 @@ const { config: webpackConfig, plugins } = config({
   debug: true,
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
   useProxy: true,
-  localChrome: '/Users/hq/SoftwareDev/arivepr/insights-chrome/build/',
+  localChrome: process.env.LOCAL_CHROME,
   appUrl: process.env.BETA ? '/beta/openshift/sandbox' : '/openshift/sandbox',
-  env: process.env.BETA ? 'stage-beta' : 'stage-stable',
+  env: `${process.env.ENVIRONMENT || 'stage'}-${
+    process.env.BETA ? 'beta' : 'stable'
+  }`,
   standalone: Boolean(process.env.STANDALONE),
 });
 plugins.push(...commonPlugins);
