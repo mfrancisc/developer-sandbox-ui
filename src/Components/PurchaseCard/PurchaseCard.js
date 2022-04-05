@@ -38,12 +38,14 @@ const PurchaseCard = () => {
             </Text>
             <Flex className="pf-u-flex-direction-column pf-u-flex-direction-row-on-md pf-u-mt-lg pf-u-mt-0-on-md">
               <Button
+                component="a"
                 variant="secondary"
                 onClick={(e) => {
                   e.preventDefault();
                   push('./create/rosa/welcome');
                 }}
                 className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
+                href="https://console.redhat.com/beta/openshift/create/rosa/welcome"
                 isLarge
               >
                 Get Started
