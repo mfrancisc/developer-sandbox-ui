@@ -45,7 +45,7 @@ const PurchaseCard = () => {
                   push('./create/rosa/welcome');
                 }}
                 className="pf-u-flex-grow-1 pf-u-mb-md pf-u-mb-0-on-lg"
-                href="https://console.redhat.com/beta/openshift/create/rosa/welcome"
+                href="/create/rosa/welcome"
                 isLarge
               >
                 Get Started
