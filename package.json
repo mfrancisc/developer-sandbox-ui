@@ -18,12 +18,13 @@
     "start": "webpack serve --config config/dev.webpack.config.js",
     "start:beta": "BETA=true npm start",
     "start:standalone": "STANDALONE=true npm start",
-    "test": "jest",
+    "test": "jest --passWithNoTests",
     "verify": "npm-run-all build lint test"
   },
   "dependencies": {
-    "@patternfly/react-core": "4.135.0",
-    "@patternfly/react-table": "4.29.0",
+    "@patternfly/patternfly": "^4.159.1",
+    "@patternfly/react-core": "^4.175.4",
+    "@patternfly/react-table": "4.44.4",
     "@redhat-cloud-services/frontend-components": "^3.3.3",
     "@redhat-cloud-services/frontend-components-notifications": "^3.2.2",
     "@redhat-cloud-services/frontend-components-utilities": "^3.2.4",

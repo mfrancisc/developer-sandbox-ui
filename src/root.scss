@@ -1,0 +1,13 @@
+@import 'node_modules/@patternfly/react-core/dist/styles/base.css';
+
+:root {
+  // Color Variables
+  --root-background-color: var(--pf-global--BackgroundColor--200);
+  --top-banner-background-color: var(--pf-global--Color--100);
+  --root-danger-color: var(--pf-global--danger-color--100);
+
+  // Spacer Variables
+  --root-xl-spacer: var(--pf-global--spacer--xl);
+  --root-md-spacer: var(--pf-global--spacer--md);
+  --root-sm-spacer: var(--pf-global--spacer--sm);
+}

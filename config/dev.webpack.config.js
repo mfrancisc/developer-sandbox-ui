@@ -7,9 +7,11 @@ const { config: webpackConfig, plugins } = config({
   debug: true,
   deployment: process.env.BETA ? 'beta/apps' : 'apps',
   useProxy: true,
-  useCloud: true, // Until console.redhat.com is working
-  appUrl: process.env.BETA ? '/beta/staging/starter' : '/staging/starter',
-  env: process.env.BETA ? 'ci-beta' : 'ci-stable',
+  localChrome: process.env.LOCAL_CHROME,
+  appUrl: process.env.BETA ? '/beta/openshift/sandbox' : '/openshift/sandbox',
+  env: `${process.env.ENVIRONMENT || 'stage'}-${
+    process.env.BETA ? 'beta' : 'stable'
+  }`,
   standalone: Boolean(process.env.STANDALONE),
 });
 plugins.push(...commonPlugins);
