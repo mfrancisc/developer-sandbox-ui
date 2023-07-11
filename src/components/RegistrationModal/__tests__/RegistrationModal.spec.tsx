@@ -165,13 +165,13 @@ describe('RegistrationModal', () => {
     expect(verifyCodeNextButton).toBeDisabled();
 
     const codeInput = screen.getByLabelText('Veritification code');
-    fireEvent.change(codeInput, { target: { value: '12345' } });
+    fireEvent.change(codeInput, { target: { value: '123456' } });
 
     expect(verifyCodeNextButton).not.toBeDisabled();
 
     verifyCodeNextButton.click();
 
-    expect(completePhoneVerification).toHaveBeenCalledWith('12345');
+    expect(completePhoneVerification).toHaveBeenCalledWith('123456');
 
     getSignupDataMock.mockReturnValue({
       status: {

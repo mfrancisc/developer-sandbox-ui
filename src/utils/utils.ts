@@ -16,7 +16,7 @@ export const mergeToBasename = (to: To, basename: string): To => {
 
 export const errorMessage = (e: unknown): string =>
   (axios.isAxiosError(e)
-    ? e.message
+    ? (e.response?.data as { message?: string })?.message || e.message
     : typeof e === 'object'
     ? e?.toString()
     : typeof e === 'string'
