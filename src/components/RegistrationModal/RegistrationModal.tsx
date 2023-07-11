@@ -94,7 +94,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
           : 'Activate your free 30 days trial'
       }
       isOpen
-      onClose={() => onClose()}
+      onClose={() => onClose(signupData)}
     >
       {error ? (
         <Alert
@@ -247,10 +247,10 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                     <TextInput
                       aria-label="Veritification code"
                       isRequired
-                      validated={!verifyCode || verifyCode.length === 5 ? 'default' : 'error'}
-                      minLength={5}
-                      maxLength={5}
-                      placeholder="XXXXX"
+                      validated={!verifyCode || verifyCode.length === 6 ? 'default' : 'error'}
+                      minLength={6}
+                      maxLength={6}
+                      placeholder="XXXXXX"
                       value={verifyCode || ''}
                       onChange={(value) => {
                         setCodeResent(false);
@@ -294,7 +294,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                   </p>
                 </TextContent>
                 <FooterButton
-                  isDisabled={loading || verifyCode.length !== 5}
+                  isDisabled={loading || verifyCode.length !== 6}
                   onClick={async () => {
                     try {
                       setLoading(true);
