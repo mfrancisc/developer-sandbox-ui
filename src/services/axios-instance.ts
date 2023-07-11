@@ -1,8 +1,3 @@
-import {
-  errorInterceptor,
-  interceptor401,
-  interceptor500,
-} from '@redhat-cloud-services/frontend-components-utilities/interceptors';
 import axios, { AxiosRequestConfig } from 'axios';
 
 const baseURL =
@@ -29,6 +24,3 @@ axiosInstance.interceptors.request.use((reqConfig: AxiosRequestConfig) => {
     };
   });
 });
-axiosInstance.interceptors.response.use(undefined, interceptor401);
-axiosInstance.interceptors.response.use(undefined, interceptor500);
-axiosInstance.interceptors.response.use(undefined, errorInterceptor);

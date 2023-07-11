@@ -26,12 +26,14 @@ const RegistrationProvider = ({ children }: { children?: React.ReactNode }) => {
   getSignupDataRef.current = async () => {
     try {
       const data = await getSignupData();
-      if (error || !isEqual(data, signupData)) {
+      if (!isEqual(data, signupData)) {
         setSignupData(data);
       }
+      setError(undefined);
       setStatusUnknown(false);
     } catch (e) {
-      setError(errorMessage(e) || 'An error occurred retrieving activation status.');
+      setError(`An error occurred retrieving registration status. ${errorMessage(e)}`);
+      setStatusUnknown(false);
     }
   };
 
@@ -44,7 +46,7 @@ const RegistrationProvider = ({ children }: { children?: React.ReactNode }) => {
     if (pollStatus) {
       const handle = setInterval(() => {
         getSignupDataRef.current?.();
-      }, 5000);
+      }, 10000);
       return () => {
         clearInterval(handle);
       };

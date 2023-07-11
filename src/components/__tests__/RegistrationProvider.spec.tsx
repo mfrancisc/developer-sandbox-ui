@@ -25,6 +25,11 @@ describe('RegistrationProvider', () => {
     expect(state).not.toBeNull();
     expect(api).not.toBeNull();
 
+    // run all use effects
+    await act(async () => {
+      // do nothing
+    });
+
     await act(async () => {
       api.setError('test');
     });
