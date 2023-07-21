@@ -8,7 +8,7 @@ const FooterButton = (
   >,
 ) => (
   <div className="pf-u-pt-xl pf-u-pt-md pf-u-text-align-center">
-    <Button {...props} />
+    <Button {...props} className="pf-u-w-100 pf-u-w-initial-on-sm" />
   </div>
 );
 

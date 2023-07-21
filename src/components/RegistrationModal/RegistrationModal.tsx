@@ -12,10 +12,12 @@ import {
   Grid,
   GridItem,
   Modal,
-  ModalVariant,
   Spinner,
+  Text,
   TextContent,
   TextInput,
+  TextVariants,
+  Title,
 } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons/dist/esm/icons/external-link-alt-icon';
 import { CheckIcon } from '@patternfly/react-icons/dist/esm/icons/check-icon';
@@ -33,6 +35,8 @@ import { useRecaptcha } from '../../hooks/useRecaptcha';
 import { errorMessage } from '../../utils/utils';
 import { SignupData } from '../../types';
 import { Status } from '../../utils/registration-context';
+import { useTrackEvent } from '../../hooks/useTrackEvent';
+import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
 
 type Props = {
   initialStatus?: Status;
@@ -41,6 +45,8 @@ type Props = {
 
 const RegistrationModal = ({ onClose, initialStatus }: Props) => {
   useRecaptcha();
+
+  const track = useTrackEvent();
 
   const [step, setStep] = React.useState<
     'new' | 'ready' | 'provisioning' | 'verify' | 'verifyCode' | 'pending-approval'
@@ -84,14 +90,32 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
     }
   }, [step]);
 
+  React.useEffect(() => {
+    if (error) {
+      track('DevSandbox Signup Error', {
+        error,
+      });
+    }
+  }, [error]);
+
+  React.useEffect(() => {
+    track('DevSandbox Signup Step', {
+      step,
+    });
+  }, [step]);
+
   return (
     <Modal
       data-testid="registration-modal"
-      variant={ModalVariant.small}
-      title={
-        step === 'ready'
-          ? "Congratulations, you're ready to get started!"
-          : 'Activate your free 30 days trial'
+      width={600}
+      aria-labelledby="registration-modal-title"
+      header={
+        // custom title to prevent ellipsis overflow on small screens
+        <Title id="registration-modal-title" headingLevel="h1">
+          {step === 'ready'
+            ? "Congratulations, you're ready to get started!"
+            : 'Activate your free 30 days trial'}
+        </Title>
       }
       isOpen
       onClose={() => onClose(signupData)}
@@ -113,21 +137,22 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
             return (
               <>
                 <TextContent>
-                  <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                    incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                    nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-                    culpa qui officia deserunt mollit anim id est laborum.
-                  </p>
+                  <Text component={TextVariants.p}>
+                    Join the vibrant community of Red Hat Developer Tools program. The free annual
+                    subscription provides access to developer resources such as Red Hat software
+                    downloads, ebooks, interactive tutorials, and interactive events with Red Hat
+                    experts.
+                  </Text>
                 </TextContent>
                 <div className="pf-u-pt-lg pf-u-pt-md pf-u-text-align-center">
                   <Checkbox
                     aria-label="Join the Red Hat Developers program"
                     id="accept-join"
                     isChecked={accepted}
-                    onChange={(checked) => setAccepted(checked)}
+                    onChange={(checked) => {
+                      setError(undefined);
+                      setAccepted(checked);
+                    }}
                     className="pf-u-mr-sm"
                   />
                   Join the{' '}
@@ -135,9 +160,9 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                     variant={ButtonVariant.link}
                     isInline
                     component="a"
-                    href="https://developers.redhat.com/"
+                    href="https://developers.redhat.com/about"
                     target="_blank"
-                    rel="noopener noreferrer"
+                    rel="noopener"
                   >
                     Red Hat Developers program <ExternalLinkAltIcon />
                   </Button>
@@ -147,6 +172,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                   isLoading={loading}
                   onClick={async () => {
                     try {
+                      setError(undefined);
                       setLoading(true);
                       await signup();
                       await getSignupDataFn();
@@ -165,14 +191,16 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
             return (
               <>
                 <TextContent>
-                  <p>We are preparing your Sandbox. It will be available shortly.</p>
-                  <p>
+                  <Text component={TextVariants.p}>
+                    We are preparing your Sandbox. It will be available shortly.
+                  </Text>
+                  <Text component={TextVariants.p}>
                     One more thing, to ensure your account is secure please enter a valid phone
                     number for SMS verification.
-                  </p>
+                  </Text>
                 </TextContent>
                 <Form>
-                  <Grid hasGutter className="pf-u-mt-md">
+                  <Grid hasGutter className="pf-u-mt-md" style={{ alignItems: 'end' }}>
                     <GridItem span={3}>
                       <FormGroup label="Country code" isRequired>
                         <TextInput
@@ -187,6 +215,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                           maxLength={4}
                           value={countryCode}
                           onChange={(value) => {
+                            setError(undefined);
                             setCountryCode(value);
                           }}
                         />
@@ -206,6 +235,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                           maxLength={32}
                           value={phoneNumber}
                           onChange={(value) => {
+                            setError(undefined);
                             setPhoneNumber(value);
                           }}
                         />
@@ -219,6 +249,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                   }
                   onClick={async () => {
                     try {
+                      setError(undefined);
                       setLoading(true);
                       await initiatePhoneVerification(countryCode, phoneNumber);
                       setStep('verifyCode');
@@ -237,10 +268,12 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
             return (
               <>
                 <TextContent>
-                  <p>We are preparing your Sandbox. It will be available shortly.</p>
-                  <p>
+                  <Text component={TextVariants.p}>
+                    We are preparing your Sandbox. It will be available shortly.
+                  </Text>
+                  <Text component={TextVariants.p}>
                     We sent a verification code to "<b>{`${countryCode} ${phoneNumber}`}</b>"
-                  </p>
+                  </Text>
                 </TextContent>
                 <Form>
                   <FormGroup label="Verification code" isRequired className="pf-u-mt-md pf-u-mb-md">
@@ -253,6 +286,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                       placeholder="XXXXXX"
                       value={verifyCode || ''}
                       onChange={(value) => {
+                        setError(undefined);
                         setCodeResent(false);
                         setVerifyCode(value);
                       }}
@@ -260,19 +294,23 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                   </FormGroup>
                 </Form>
                 <TextContent>
-                  <p>
+                  <Text component={TextVariants.p}>
                     No text received?{' '}
-                    <Button
+                    <AnalyticsButton
                       isInline
                       variant={ButtonVariant.link}
                       onClick={() => {
+                        setError(undefined);
                         setVerifyCode('');
                         initiatePhoneVerification(countryCode, phoneNumber);
                         setCodeResent(true);
                       }}
+                      analytics={{
+                        event: 'DevSandbox Signup Resend Code',
+                      }}
                     >
                       Resend code
-                    </Button>
+                    </AnalyticsButton>
                     {codeResent ? (
                       <CheckIcon
                         className="pf-u-ml-md"
@@ -285,18 +323,20 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                       isInline
                       variant={ButtonVariant.link}
                       onClick={() => {
+                        setError(undefined);
                         setStep('verify');
                         setVerifyCode('');
                       }}
                     >
                       use a different phone number
                     </Button>
-                  </p>
+                  </Text>
                 </TextContent>
                 <FooterButton
                   isDisabled={loading || verifyCode.length !== 6}
                   onClick={async () => {
                     try {
+                      setError(undefined);
                       setLoading(true);
                       await completePhoneVerification(verifyCode);
                       await getSignupDataFn();
@@ -318,7 +358,9 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
             return (
               <>
                 <TextContent>
-                  <p>We are preparing your Sandbox. It will be available shortly.</p>
+                  <Text component={TextVariants.p}>
+                    We are preparing your Sandbox. It will be available shortly.
+                  </Text>
                 </TextContent>
                 <Bullseye className="pf-u-mt-2xl pf-u-mb-lg">
                   <Spinner isSVG size="xl" />
@@ -343,10 +385,10 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
             return (
               <>
                 <TextContent>
-                  <p>
+                  <Text component={TextVariants.p}>
                     Your Sandbox will be activate for the next 30 days. Jump right in and start
                     building!
-                  </p>
+                  </Text>
                 </TextContent>
                 <div className="pf-u-p-md">
                   <img src={sandboxReadyImg} />

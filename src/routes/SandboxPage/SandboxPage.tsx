@@ -6,7 +6,9 @@ import {
   Flex,
   PageSection,
   Spinner,
+  Text,
   TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
 import SandboxPageBanner from '../../components/PageBanner/SandboxPageBanner';
 import HowItWorksCard from '../../components/HowItWorksCard/HowItWorksCard';
@@ -46,14 +48,14 @@ const SandboxPage = () => {
             ) : (
               <>
                 <TextContent>
-                  <h1>
+                  <Text component={TextVariants.h1}>
                     {provisioning ? 'Available service after provisioning' : 'Available services'}
-                  </h1>
-                  <p>
+                  </Text>
+                  <Text component={TextVariants.p}>
                     {provisioning
                       ? 'Your Sandbox account is waiting for provisioning. Once complete, these are all the cool things that are available to you.'
                       : 'Now that your Sandbox is activated, these are all the cool things that are available to you, right in your Sandbox!'}
-                  </p>
+                  </Text>
                 </TextContent>
                 <ServiceCatalog isDisabled={provisioning} />
               </>

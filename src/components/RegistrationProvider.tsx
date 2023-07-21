@@ -9,8 +9,11 @@ import { getSignupData } from '../services/registration-service';
 import RegistrationModal from './RegistrationModal/RegistrationModal';
 import { SignupData } from '../types';
 import { errorMessage } from '../utils/utils';
+import { useTrackEvent } from '../hooks/useTrackEvent';
 
 const RegistrationProvider = ({ children }: { children?: React.ReactNode }) => {
+  const track = useTrackEvent();
+
   // state
   const [statusUnknown, setStatusUnknown] = React.useState(true);
   const [signupData, setSignupData] = React.useState<SignupData>();
@@ -21,6 +24,15 @@ const RegistrationProvider = ({ children }: { children?: React.ReactNode }) => {
     () => (statusUnknown ? 'unknown' : signupDataToStatus(signupData)),
     [statusUnknown, signupData],
   );
+
+  React.useEffect(() => {
+    // send event when signup status is first established and upon change
+    if (!statusUnknown) {
+      track('DevSandbox Signup Status', {
+        status,
+      });
+    }
+  }, [statusUnknown, status]);
 
   const getSignupDataRef = React.useRef<() => void>();
   getSignupDataRef.current = async () => {
@@ -66,12 +78,14 @@ const RegistrationProvider = ({ children }: { children?: React.ReactNode }) => {
     ],
     [error, signupData, showUserSignup, status, actions],
   );
+
   return (
     <RegistrationContext.Provider value={contextValue}>
       {showUserSignup ? (
         <RegistrationModal
           initialStatus={status}
           onClose={(newSignupData) => {
+            track('DevSandbox Signup Closed');
             if (newSignupData) {
               setSignupData(newSignupData);
             }

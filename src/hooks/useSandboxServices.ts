@@ -24,7 +24,10 @@ export const useSandboxServices = () => {
           'A cloud-native application platform with everything you need to manage your development life cycle securely, including standardized workflows, support for multiple environments, continuous integration, and release management.',
         iconUrl: openShiftIconUrl,
         learnMoreUrl: 'https://developers.redhat.com/products/openshift/overview',
-        launchUrl: signupData?.consoleURL,
+        launchUrl:
+          signupData?.consoleURL && signupData?.defaultUserNamespace
+            ? `${signupData?.consoleURL}/add/ns/${signupData?.defaultUserNamespace}`
+            : signupData?.consoleURL,
       },
       {
         title: 'Red Hat',

@@ -8,4 +8,5 @@ export type SignupData = {
   cheDashboardURL: string;
   rhodsMemberURL: string;
   compliantUsername: string;
+  defaultUserNamespace: string;
 };
