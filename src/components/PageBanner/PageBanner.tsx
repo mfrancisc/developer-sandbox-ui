@@ -5,7 +5,9 @@ import {
   FlexItem,
   PageSection,
   PageSectionVariants,
+  Text,
   TextContent,
+  TextVariants,
 } from '@patternfly/react-core';
 
 type Props = {
@@ -25,9 +27,10 @@ const PageBanner = ({ children, icon, title }: Props) => (
       <FlexItem style={{ flexShrink: 0 }}>{icon}</FlexItem>
       <Divider orientation={{ default: 'horizontal', sm: 'vertical' }} />
       <FlexItem>
+        t
         <TextContent>
-          <h1>{title}</h1>
-          <p>{children}</p>
+          <Text component={TextVariants.h1}>{title}</Text>
+          <Text component={TextVariants.p}>{children}</Text>
         </TextContent>
       </FlexItem>
     </Flex>

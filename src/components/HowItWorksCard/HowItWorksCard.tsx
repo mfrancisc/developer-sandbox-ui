@@ -9,7 +9,7 @@ const HowItWorksCard = () => (
     <CardBody className="how-it-works">
       <TextContent>
         <Text component={TextVariants.h1}>How it works</Text>
-        <Text>
+        <Text component={TextVariants.p}>
           The sandbox provides you with a private OpenShift environment in a shared, multi-tenant
           OpenShift cluster that is pre-configured with a set of developer tools. You can easily
           create containers from your source code or Dockerfile, build new applications using the
@@ -22,9 +22,9 @@ const HowItWorksCard = () => (
       <div className="how-it-works__viz">
         <div>Import your code</div>
         <div />
-        <div>Deploy your application</div>
+        <div>Deploy and share your application</div>
         <div />
-        <div>Monitor your application</div>
+        <div>Play, experiment, and learn</div>
       </div>
     </CardBody>
   </Card>
