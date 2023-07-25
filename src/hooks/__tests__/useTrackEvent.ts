@@ -19,7 +19,7 @@ describe('useTrackEvent', () => {
     }));
     const { result } = renderHook(() => useTrackEvent());
     result.current('test-event', { foo: 'bar' });
-    expect(trackMock).toHaveBeenCalledWith('test-event', { current_path: '/', foo: 'bar' });
+    expect(trackMock).toHaveBeenCalledWith('test-event', { foo: 'bar' });
     trackMock.mockClear();
 
     result.current('test-event', { current_path: '/foo/bar', foo: 'bar', test: 'testing' });

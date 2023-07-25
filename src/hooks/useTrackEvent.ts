@@ -17,7 +17,7 @@ export const useTrackEvent = () => {
   return React.useCallback(
     (event: string, properties?: JSONObject) => {
       if (process.env.NODE_ENV !== 'development') {
-        analytics?.track(event, { current_path: window.location.pathname, ...properties });
+        analytics?.track(event, properties);
       } else {
         // eslint-disable-next-line no-console
         console.log('analytics.track', event, properties);
