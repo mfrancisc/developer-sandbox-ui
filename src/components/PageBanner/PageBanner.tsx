@@ -27,7 +27,6 @@ const PageBanner = ({ children, icon, title }: Props) => (
       <FlexItem style={{ flexShrink: 0 }}>{icon}</FlexItem>
       <Divider orientation={{ default: 'horizontal', sm: 'vertical' }} />
       <FlexItem>
-        t
         <TextContent>
           <Text component={TextVariants.h1}>{title}</Text>
           <Text component={TextVariants.p}>{children}</Text>
