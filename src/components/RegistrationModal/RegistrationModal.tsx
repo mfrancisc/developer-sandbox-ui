@@ -350,8 +350,8 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
               <>
                 <TextContent>
                   <Text component={TextVariants.p}>
-                    Your Sandbox will be activate for the next 30 days. Jump right in and start
-                    building!
+                    Your Sandbox is now active. It will be available for next 30 days. Jump right in
+                    and start creating your applications!
                   </Text>
                 </TextContent>
                 <div className="pf-u-p-md">
