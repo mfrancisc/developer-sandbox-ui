@@ -1,5 +1,5 @@
 export const recaptchaApiKey =
-  process.env.NODE_ENV === 'test' ? 'test-api-key' : '6LdL7aMlAAAAALvuuAZWjwlOLRKMCIrWjOpv-U3G';
+  process.env.NODE_ENV === 'test' ? 'test-api-key' : '6Lc_164lAAAAAPvrC0WO-XDljvZ2DZ3UQ38A4XR0';
 
 export const loadRecaptchaScript = (): void => {
   if (recaptchaApiKey) {
