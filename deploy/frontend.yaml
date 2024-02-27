@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: sandbox-frontend
+  name: sandbox
 objects:
   - apiVersion: cloud.redhat.com/v1alpha1
     kind: Frontend
@@ -36,4 +36,4 @@ parameters:
   - name: IMAGE_TAG
     required: true
   - name: IMAGE
-    value: quay.io/cloudservices/sandbox-frontend
+    value: quay.io/cloudservices/sandbox
