@@ -2,12 +2,12 @@
 apiVersion: v1
 kind: Template
 metadata:
-  name: developer-sandbox-frontend
+  name: sandbox-frontend
 objects:
   - apiVersion: cloud.redhat.com/v1alpha1
     kind: Frontend
     metadata:
-      name: developer-sandbox
+      name: sandbox
     spec:
       envName: ${ENV_NAME}
       title: Developer Sandbox
@@ -36,4 +36,4 @@ parameters:
   - name: IMAGE_TAG
     required: true
   - name: IMAGE
-    value: quay.io/cloudservices/developer-sandbox-frontend
+    value: quay.io/cloudservices/sandbox-frontend
