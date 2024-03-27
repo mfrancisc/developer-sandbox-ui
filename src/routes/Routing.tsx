@@ -7,7 +7,6 @@ import { linkBasename } from '../utils/utils';
 const SandboxPage = lazy(
   () => import(/* webpackChunkName: "SandboxPage" */ './SandboxPage/SandboxPage'),
 );
-const OopsPage = lazy(() => import(/* webpackChunkName: "OopsPage" */ './OopsPage/OopsPage'));
 const NoPermissionsPage = lazy(
   () => import(/* webpackChunkName: "NoPermissionsPage" */ './NoPermissionsPage/NoPermissionsPage'),
 );
@@ -22,10 +21,6 @@ const routes = [
   {
     path: 'no-permissions',
     element: NoPermissionsPage,
-  },
-  {
-    path: 'oops',
-    element: OopsPage,
   },
   {
     path: '/',
