@@ -1,6 +1,5 @@
 [![Build Status](https://travis-ci.org/RedHatInsights/developer-sandbox-ui.svg?branch=master)](https://travis-ci.org/RedHatInsights/developer-sandbox-ui)
 
-
 # Developer Sandbox Frontend
 
 ## Initial etc/hosts setup
