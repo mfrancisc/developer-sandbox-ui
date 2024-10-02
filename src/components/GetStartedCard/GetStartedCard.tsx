@@ -21,7 +21,7 @@ import useRegistrationService from '../../hooks/useRegistrationService';
 const PrimaryCheckIcon = () => (
   <CheckIcon
     style={{
-      color: 'var(--pf-global--primary-color--100)',
+      color: 'var(--pf-v5-global--primary-color--100)',
     }}
   />
 );
@@ -47,17 +47,17 @@ const GetStartedCard = () => {
               md={4}
               order={{ md: '1' }}
               style={{ alignSelf: 'center' }}
-              className="pf-u-text-align-center"
+              className="pf-v5-u-text-align-center"
             >
               <img
                 src={heroImg}
                 style={{ maxHeight: 200 }}
-                className="pf-u-display-block pf-u-m-auto pf-u-mb-lg pf-u-mb-auto-on-md"
+                className="pf-v5-u-display-block pf-v5-u-m-auto pf-v5-u-mb-lg pf-v5-u-mb-auto-on-md"
               />
             </GridItem>
             <GridItem md={8}>
               <Title headingLevel="h1">Start exploring Developer Sandbox for free</Title>
-              <List isPlain className="pf-u-p-md pf-u-pt-lg pf-u-pb-lg">
+              <List isPlain className="pf-v5-u-p-md pf-v5-u-pt-lg pf-v5-u-pb-lg">
                 <ListItem icon={<PrimaryCheckIcon />}>
                   Instant access to a free pre-configured for learning and experimenting with
                   OpenShift, Kubernetes, and containers.
@@ -84,7 +84,7 @@ const GetStartedCard = () => {
                   variant={AlertVariant.danger}
                   actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
                   isInline
-                  className="pf-u-mb-lg"
+                  className="pf-v5-u-mb-lg"
                 >
                   {error}
                 </Alert>
@@ -108,7 +108,7 @@ const GetStartedCard = () => {
                     setShowUserSignup(true);
                   }
                 }}
-                className="pf-u-w-100 pf-u-w-initial-on-sm"
+                className="pf-v5-u-w-100 pf-v5-u-w-initial-on-sm"
                 analytics={{
                   event: 'DevSandbox Signup Start',
                 }}
@@ -121,7 +121,7 @@ const GetStartedCard = () => {
                 href="https://developers.redhat.com/developer-sandbox"
                 target="_blank"
                 rel="noopener"
-                className="pf-u-w-100 pf-u-w-initial-on-sm"
+                className="pf-v5-u-w-100 pf-v5-u-w-initial-on-sm"
                 style={{
                   display: 'inline-block',
                   whiteSpace: 'initial',

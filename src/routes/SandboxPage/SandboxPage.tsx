@@ -20,7 +20,7 @@ const SandboxPage = () => {
   return (
     <>
       <SandboxPageBanner />
-      <PageSection className="pf-u-p-xl">
+      <PageSection className="pf-v5-u-p-xl">
         {status === 'unknown' ? (
           <Bullseye>
             <Spinner />
@@ -31,8 +31,8 @@ const SandboxPage = () => {
               <Alert
                 title="An error occurred"
                 variant={AlertVariant.danger}
-                className="pf-u-mb-lg"
-                style={{ boxShadow: 'var(--pf-global--BoxShadow--sm)' }}
+                className="pf-v5-u-mb-lg"
+                style={{ boxShadow: 'var(--pf-v5-global--BoxShadow--sm)' }}
               >
                 {error}
               </Alert>

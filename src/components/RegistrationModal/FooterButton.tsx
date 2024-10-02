@@ -7,8 +7,8 @@ const FooterButton = (
     'children' | 'onClick' | 'isDisabled' | 'isLoading'
   >,
 ) => (
-  <div className="pf-u-pt-xl pf-u-pt-md pf-u-text-align-center">
-    <Button {...props} className="pf-u-w-100 pf-u-w-initial-on-sm" />
+  <div className="pf-v5-u-pt-xl pf-v5-u-pt-md pf-v5-u-text-align-center">
+    <Button {...props} className="pf-v5-u-w-100 pf-v5-u-w-initial-on-sm" />
   </div>
 );
 

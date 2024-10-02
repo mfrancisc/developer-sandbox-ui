@@ -15,7 +15,7 @@ type Props = {
 };
 
 const PageBanner = ({ children, icon, title }: Props) => (
-  <PageSection variant={PageSectionVariants.light} className="pf-u-p-xl">
+  <PageSection variant={PageSectionVariants.light} className="pf-v5-u-p-xl">
     <Flex
       direction={{ default: 'column', sm: 'row' }}
       spaceItems={{ default: 'spaceItemsMd', sm: 'spaceItemsXl' }}

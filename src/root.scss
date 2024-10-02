@@ -2,12 +2,12 @@
 
 :root {
   // Color Variables
-  --root-background-color: var(--pf-global--BackgroundColor--200);
-  --top-banner-background-color: var(--pf-global--Color--100);
-  --root-danger-color: var(--pf-global--danger-color--100);
+  --root-background-color: var(--pf-v5-global--BackgroundColor--200);
+  --top-banner-background-color: var(--pf-v5-global--Color--100);
+  --root-danger-color: var(--pf-v5-global--danger-color--100);
 
   // Spacer Variables
-  --root-xl-spacer: var(--pf-global--spacer--xl);
-  --root-md-spacer: var(--pf-global--spacer--md);
-  --root-sm-spacer: var(--pf-global--spacer--sm);
+  --root-xl-spacer: var(--pf-v5-global--spacer--xl);
+  --root-md-spacer: var(--pf-v5-global--spacer--md);
+  --root-sm-spacer: var(--pf-v5-global--spacer--sm);
 }
