@@ -30,9 +30,9 @@ const ServiceCard = ({
   showDisabledButton,
   helperText,
 }: Props) => (
-  <Card className="pf-u-h-100">
+  <Card className="pf-v5-u-h-100">
     <CardHeader>
-      <img src={iconUrl} style={{ width: 48 }} className="pf-u-mr-md" />
+      <img src={iconUrl} style={{ width: 48 }} className="pf-v5-u-mr-md" />
       <TextContent>
         <Text component={TextVariants.h2}>{title}</Text>
         {subtitle}
@@ -46,7 +46,7 @@ const ServiceCard = ({
           component="a"
           isDisabled={showDisabledButton}
           href={launchUrl}
-          className="pf-u-mr-md"
+          className="pf-v5-u-mr-md"
           target="_blank"
           rel="noopener"
           analytics={{

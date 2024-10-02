@@ -116,7 +116,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
           variant={AlertVariant.danger}
           actionClose={<AlertActionCloseButton onClose={() => setError(undefined)} />}
           isInline
-          className="pf-u-mb-lg"
+          className="pf-v5-u-mb-lg"
         >
           {error}
         </Alert>
@@ -157,7 +157,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                   </Text>
                 </TextContent>
                 <Form>
-                  <Grid hasGutter className="pf-u-mt-md" style={{ alignItems: 'end' }}>
+                  <Grid hasGutter className="pf-v5-u-mt-md" style={{ alignItems: 'end' }}>
                     <GridItem span={3}>
                       <FormGroup label="Country code" isRequired>
                         <TextInput
@@ -234,7 +234,11 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                   </Text>
                 </TextContent>
                 <Form>
-                  <FormGroup label="Verification code" isRequired className="pf-u-mt-md pf-u-mb-md">
+                  <FormGroup
+                    label="Verification code"
+                    isRequired
+                    className="pf-v5-u-mt-md pf-v5-u-mb-md"
+                  >
                     <TextInput
                       aria-label="Veritification code"
                       isRequired
@@ -271,8 +275,8 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                     </AnalyticsButton>
                     {codeResent ? (
                       <CheckIcon
-                        className="pf-u-ml-md"
-                        style={{ color: 'var(--pf-global--success-color--100)' }}
+                        className="pf-v5-u-ml-md"
+                        style={{ color: 'var(--pf-v5-global--success-color--100)' }}
                       />
                     ) : null}
                     <br />
@@ -321,7 +325,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                     We are preparing your Sandbox. It will be available shortly.
                   </Text>
                 </TextContent>
-                <Bullseye className="pf-u-mt-2xl pf-u-mb-lg">
+                <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
                   <Spinner size="xl" />
                 </Bullseye>
                 <FooterButton isDisabled>Launch Sandbox</FooterButton>
@@ -334,7 +338,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                 <TextContent>
                   <p>Your Sandbox account is waiting for approval.</p>
                 </TextContent>
-                <Bullseye className="pf-u-mt-2xl pf-u-mb-lg">
+                <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
                   <Spinner size="xl" />
                 </Bullseye>
                 <FooterButton onClick={() => onClose(signupData)}>Close</FooterButton>
@@ -349,7 +353,7 @@ const RegistrationModal = ({ onClose, initialStatus }: Props) => {
                     and start creating your applications!
                   </Text>
                 </TextContent>
-                <div className="pf-u-p-md">
+                <div className="pf-v5-u-p-md">
                   <img src={sandboxReadyImg} />
                 </div>
                 <FooterButton onClick={() => onClose(signupData)}>Got it</FooterButton>

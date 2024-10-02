@@ -22,7 +22,7 @@ const HowItWorksCard = () => (
           experience on OpenShift with the sandbox.
         </Text>
       </TextContent>
-      <img src={howItWorksImg} className="pf-u-w-75 pf-u-pt-md pf-u-pb-md" />
+      <img src={howItWorksImg} className="pf-v5-u-w-75 pf-v5-u-pt-md pf-v5-u-pb-md" />
       <div className="how-it-works__viz">
         <div>Import your code</div>
         <div />
