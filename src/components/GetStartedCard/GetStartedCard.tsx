@@ -59,8 +59,8 @@ const GetStartedCard = () => {
               <Title headingLevel="h1">Start exploring Developer Sandbox for free</Title>
               <List isPlain className="pf-v5-u-p-md pf-v5-u-pt-lg pf-v5-u-pb-lg">
                 <ListItem icon={<PrimaryCheckIcon />}>
-                  Instant access to a free pre-configured for learning and experimenting with
-                  OpenShift, Kubernetes, and containers.
+                  Instant access to a free pre-configured environment for learning and experimenting
+                  with OpenShift, Kubernetes, and containers.
                 </ListItem>
                 <ListItem icon={<PrimaryCheckIcon />}>
                   Built in, pre-configured, developer tooling combined with a set of sample
