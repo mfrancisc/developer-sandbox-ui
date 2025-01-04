@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useState} from "react";
 import openShiftIconUrl from '../images/Product_Icon-Red_Hat-OpenShift-RGB.svg';
 import dataScienceUrl from '../images/Product_Icon-Red_Hat-OpenShift_Data_Science-RGB.svg';
 import devSpacesUrl from '../images/Product_Icon-Red_Hat-OpenShift_Dev_Spaces-RGB.svg';
@@ -7,7 +7,6 @@ import {useRegistrationContext} from './useRegistrationContext';
 import useAxios, {InstanceAPI} from "./useAxios";
 import {errorMessage} from "../utils/utils";
 import {AxiosError} from 'axios'
-
 
 export const OPENSHIFT_AI_ID = 'red-hat-data-science';
 export const ANSIBLE_ID = 'red-hat-ansible-automation-platform';
@@ -23,7 +22,7 @@ export type Service = {
     onClickFunc?: () => Promise<void>;
 };
 
-export const useSandboxServices = () => {
+export const useSandboxServices = (handleShowAAPModal: ()=>void): Service[] => {
     const [{signupData}, api] = useRegistrationContext();
     const axiosInstance = useAxios(InstanceAPI.KUBE_API);
 
@@ -44,8 +43,11 @@ export const useSandboxServices = () => {
                     'Error while creating AAP instance. Please try again.',
                 );
             }
-        });
-    }
+        }).finally(()=>{
+            handleShowAAPModal()
+        })
+    };
+
 
     return React.useMemo<Service[]>(
         () => [
@@ -90,13 +92,12 @@ export const useSandboxServices = () => {
                     'A comprehensive solution for managing the content and execution of your strategic automation.',
                 iconUrl: ansibleUrl,
                 learnMoreUrl: 'https://developers.redhat.com/products/ansible/overview',
-                launchUrl: `${signupData?.consoleURL}k8s/ns/${signupData?.defaultUserNamespace}/aap.ansible.com~v1alpha1~AnsibleAutomationPlatform/dev-sandbox-aap`,
                 onClickFunc: handleAAPInstance,
             },
         ],
         [signupData],
     );
-};
+}
 
 // This is custom crafted AAP CR which is able to run properly with the sandbox environment constraints.
 // In future release, some of these values might become defaults or they will be moved into webhooks.
@@ -137,6 +138,7 @@ const AAPObject: string = `
       }
     },
     "database": {
+      "replicas": 1,
       "resource_requirements": {
         "requests": {
           "cpu": "100m",
