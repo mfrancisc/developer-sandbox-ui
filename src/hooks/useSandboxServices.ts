@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import openShiftIconUrl from '../images/Product_Icon-Red_Hat-OpenShift-RGB.svg';
 import dataScienceUrl from '../images/Product_Icon-Red_Hat-OpenShift_Data_Science-RGB.svg';
 import devSpacesUrl from '../images/Product_Icon-Red_Hat-OpenShift_Dev_Spaces-RGB.svg';
@@ -22,7 +22,7 @@ export type Service = {
     onClickFunc?: () => Promise<void>;
 };
 
-export const useSandboxServices = (handleShowAAPModal: ()=>void): Service[] => {
+export const useSandboxServices = (handleShowAAPModal: () => void): Service[] => {
     const [{signupData}, api] = useRegistrationContext();
     const axiosInstance = useAxios(InstanceAPI.KUBE_API);
 
@@ -43,7 +43,7 @@ export const useSandboxServices = (handleShowAAPModal: ()=>void): Service[] => {
                     'Error while creating AAP instance. Please try again.',
                 );
             }
-        }).finally(()=>{
+        }).finally(() => {
             handleShowAAPModal()
         })
     };
@@ -151,6 +151,7 @@ const AAPObject: string = `
       }
     },
     "controller": {
+      "garbage_collect_secrets": true,
       "disabled": false,
       "uwsgi_processes": 2,
       "task_resource_requirements": {

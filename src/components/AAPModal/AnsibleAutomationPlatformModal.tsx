@@ -8,17 +8,20 @@ import {Text, TextContent, TextVariants} from '@patternfly/react-core/dist/dynam
 import {Title} from '@patternfly/react-core/dist/dynamic/components/Title';
 import {errorMessage} from '../../utils/utils';
 import {AAPData, StatusCondition} from "../../services/kube-api";
-import {SHORT_INTERVAL} from '../../utils/const';
+import {LONG_INTERVAL, SHORT_INTERVAL} from '../../utils/const';
 import useKubeApi from "../../hooks/useKubeApi";
-import {ClipboardCopy} from '@patternfly/react-core';
+import {Button, ClipboardCopy} from '@patternfly/react-core';
 import useRegistrationService from "../../hooks/useRegistrationService";
+import EyeSlashIcon from '@patternfly/react-icons/dist/esm/icons/eye-slash-icon';
+import EyeIcon from '@patternfly/react-icons/dist/esm/icons/eye-icon';
+import AnalyticsButton from "../AnalyticsButton/AnalyticsButton";
+import {ExternalLinkAltIcon} from "@patternfly/react-icons";
+import {getReadyCondition} from "../../utils/conditions";
 
 type Props = {
-    initialStatus?: Status;
+    initialStatus?: string;
     onClose: (aapData?: AAPData) => void;
 };
-
-export type Status = 'unknown' | 'provisioning' | 'ready';
 
 const decode = (str: string): string => Buffer.from(str, 'base64').toString('binary');
 
@@ -29,8 +32,8 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
     const [status, setStatus] = React.useState<string>(initialStatus ? initialStatus : 'provisioning');
     const [ansibleUILink, setAnsibleUILink] = React.useState<string | undefined>();
     const [ansibleUIUser, setAnsibleUIUser] = React.useState<string>();
-    const [ansibleUIPassword, setAnsibleUIPassword] = React.useState<string>();
-
+    const [ansibleUIPassword, setAnsibleUIPassword] = React.useState<string>("");
+    const [passwordHidden, setPasswordHidden] = React.useState(true);
     const handleSetAAPCRError = (errorDetails: string) => {
         setError(errorDetails)
     }
@@ -58,10 +61,9 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
                 if (data.items[0].status.adminPasswordSecret) {
                     let adminSecret = await getSecret(signupData.defaultUserNamespace, data.items[0].status.adminPasswordSecret)
                     if (adminSecret != undefined && adminSecret.data != undefined) {
-                        setAnsibleUIPassword(adminSecret.data.password)
+                        setAnsibleUIPassword(decode(adminSecret.data.password))
                     }
                 }
-                setStatus("ready")
             }
 
         } catch (e) {
@@ -71,7 +73,7 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
 
 
     React.useEffect(() => {
-        if (status === 'provisioning' || status === 'unknown') {
+        if (status === 'provisioning' || status === 'unknown' || status == '') {
             const handle = setInterval(getAAPDataFn, SHORT_INTERVAL);
             return () => {
                 clearInterval(handle);
@@ -88,8 +90,8 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
                 // custom title to prevent ellipsis overflow on small screens
                 <Title id="aap-modal-title" headingLevel="h1">
                     {status === 'ready'
-                        ? "Congratulations, you're ready to get started!"
-                        : 'We are provisioning your AAP instance...'}
+                        ? "Ansible Automation Platform instance provisioned"
+                        : 'Provisioning Ansible Automation Platform (AAP) instance'}
                 </Title>
             }
             isOpen
@@ -114,13 +116,34 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
                             <>
                                 <TextContent>
                                     <Text component={TextVariants.p}>
-                                        We are preparing your AAP instance. It might take up to ~30 minutes to be
-                                        ready...
+                                        Your AAP instance might take up to 30 minutes to provision.
+                                        Once ready, your instance will be automatically turned off after 12 hours.
+                                        <br/>
+                                        While you wait, start your prerequisite AAP trial subscription.
+                                    </Text>
+                                    <Text component={TextVariants.p}>
+                                        <a target="_blank" rel="noreferrer">Start AAP Trial
+                                            subscription <ExternalLinkAltIcon></ExternalLinkAltIcon></a>
                                     </Text>
                                 </TextContent>
                                 <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
                                     <Spinner size="xl"/>
                                 </Bullseye>
+                                <TextContent>
+                                    <Text component={TextVariants.small}>
+                                        You can close this modal, and follow the status from the AAP card on the screen
+                                        in the background.
+                                    </Text>
+                                </TextContent>
+                                <Button
+                                    variant="link"
+                                    size="sm"
+                                    component="span"
+                                    isInline
+                                    onClick={(event) => onClose()}
+                                    aria-label="Close"
+                                >Close
+                                </Button>
                             </>
                         );
 
@@ -129,19 +152,10 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
                             <>
                                 <TextContent>
                                     <Text component={TextVariants.p}>
-                                        Your AAP instance is now ready. Jump right in
-                                        and start creating your applications!
-                                    </Text>
-                                    <Text component={TextVariants.h3}>
-                                        Ansible UI access details
+                                        Use the following credentials to log into the Ansible Portal.
                                     </Text>
                                 </TextContent>
-                                <TextContent>
-                                    <Text component={TextVariants.p}>
-                                        Link: &nbsp;
-                                        <a target="_blank" href={ansibleUILink} rel="noreferrer">Open UI</a>
-                                    </Text>
-                                </TextContent>
+                                &nbsp;
                                 <TextContent>
                                     <Text component={TextVariants.p}>
                                         Username: &nbsp;
@@ -158,12 +172,41 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
                                         <ClipboardCopy isReadOnly hoverTip="Copy" clickTip="Copied"
                                                        variant="inline-compact"
                                                        isCode
+                                                       onCopy={() => {
+                                                           navigator.clipboard.writeText(ansibleUIPassword)
+                                                       }}
                                         >
-
-                                            {decode(ansibleUIPassword || "")}
+                                            {passwordHidden ? "*".repeat(ansibleUIPassword.length) : ansibleUIPassword}
                                         </ClipboardCopy>
+
+                                        <Button variant="plain"
+                                                onClick={() => setPasswordHidden(!passwordHidden)}
+                                                aria-label={passwordHidden ? 'Show password' : 'Hide password'}
+                                                icon={passwordHidden ? <EyeIcon/> : <EyeSlashIcon/>}
+
+                                        ></Button>
                                     </Text>
                                     &nbsp;
+                                </TextContent>
+                                <TextContent>
+                                    <AnalyticsButton
+                                        onClick={() => {
+                                            window.open(ansibleUILink, '_blank');
+                                        }}
+                                        className="pf-v5-u-w-100 pf-v5-u-w-initial-on-sm"
+                                        analytics={{
+                                            event: 'DevSandbox Ansible UI Start',
+                                        }}
+                                    >
+                                        Go to Ansible Automation Platform <ExternalLinkAltIcon></ExternalLinkAltIcon>
+                                    </AnalyticsButton>
+
+                                </TextContent>
+                                <br/>
+                                <TextContent>
+                                    <Text component={TextVariants.small}>
+                                        12 hours remaining until the instance will be automatically turned off.
+                                    </Text>
                                 </TextContent>
                             </>
                         );
@@ -174,58 +217,5 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
         </Modal>
     );
 };
-
-let getReadyCondition = (data: AAPData | undefined, setError: (errorDetails: string) => void): string => {
-    /**
-     * Those are the types of conditions you can find in the AAP CR
-     *
-     * Type       Status  Updated                Reason     Message
-     * Successful True    * 23 Dec 2024, 23:56   * - -
-     * Failure    False    * 27 Dec 2024, 18:21  * Failed   unknown playbook failure
-     * Running    False     * 27 Dec 2024, 18:37 * Running  Running reconciliation
-     */
-    if (data == undefined || data.items.length == 0 || data.items[0].status == undefined || data.items[0].status.conditions.length == 0) {
-        return "unknown"
-    }
-
-    // we can assume that there will be only one aap instance
-    let conditions = data.items[0].status.conditions
-
-    // if the Successful condition is set to true it means the instance is ready
-    let [isSuccessful, conditionSuccessful] = isConditionTrue("Successful", conditions)
-    if (isSuccessful && conditionSuccessful?.reason == "Successful") {
-        return "ready"
-    }
-
-    // If the Failure condition is set to True, then we need to return the error
-    let [hasFailed, condition] = isConditionTrue("Failure", conditions)
-    if (hasFailed) {
-        if (condition) {
-            setError(condition.message)
-        }
-        return "unknown"
-    }
-
-    // If the Running condition is set to true it means that the instance it's still provisioning
-    let [isStillRunning, conditionRunning] = isConditionTrue("Running", conditions)
-    if (isStillRunning) {
-        return "provisioning"
-    }
-
-    // unable to find the ready condition
-    return "unknown"
-}
-
-
-// isConditionTrue checks if a given condition type exists and it's status is set to True
-let isConditionTrue = (condType: string, conditions: StatusCondition[]): [boolean, StatusCondition | null] => {
-    for (var condition of conditions) {
-        if (condition.type == condType &&
-            condition.status == "True") {
-            return [true, condition]
-        }
-    }
-    return [false, null]
-}
 
 export default AAPModal;
