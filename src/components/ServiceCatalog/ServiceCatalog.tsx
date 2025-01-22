@@ -35,12 +35,11 @@ const ServiceCatalog = ({isDisabled}: Props) => {
     const disableAI = useFlag('platform.sandbox.openshift-ai-disabled');
     const {getAAPData, getDeployments, getStatefulSets, getPersistentVolumeClaims} = useKubeApi();
     const [AAPStatus, setAAPStatus] = React.useState<string>('');
-    const handleSetAAPCRError = (errorDetails: string) => {
-        // setError(errorDetails)
-        // todo handle error
-    }
     const axiosInstance = useAxios(InstanceAPI.KUBE_API);
     const [{signupData}, api] = useRegistrationContext();
+    const handleSetAAPCRError = (errorDetails: string) => {
+         api.setError(errorDetails)
+    }
 
     async function deleteSecretsAndPVCs(k8sObjects: StatefulSetData | DeploymentData | void, userNamespace: string) {
         if (k8sObjects && k8sObjects.items.length > 0) {
@@ -126,26 +125,20 @@ const ServiceCatalog = ({isDisabled}: Props) => {
         await deleteSecretsAndPVCs(aapDeployments, signupData.defaultUserNamespace);
         await deleteSecretsAndPVCs(aapStatefulSets, signupData.defaultUserNamespace);
         await deletePVCsForSTS(aapStatefulSets, signupData.defaultUserNamespace);
-
-
     }
 
     const getAAPDataFn = React.useCallback(
         async () => {
             try {
                 if (signupData == undefined) {
-                    console.log("no signup data found ")
-                    // todo handle error
-                    // setError('Unable to retrieve signup data.');
+                    api.setError('Unable to retrieve signup data.');
                     return
                 }
                 const data = await getAAPData(signupData.defaultUserNamespace)
                 let status = getReadyCondition(data, handleSetAAPCRError)
                 setAAPStatus(status);
             } catch (e) {
-                // setError(errorMessage(e));
-                console.log("some error occured ", e)
-                // todo handle error
+                api.setError(errorMessage(e));
             }
         }
         , []);
