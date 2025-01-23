@@ -51,11 +51,27 @@ const ServiceCatalog = ({isDisabled}: Props) => {
                         const volume = volumes[volumeKey]
                         // delete pvc if any
                         if (volume.persistentVolumeClaim != undefined) {
-                            await axiosInstance.delete(`/api/v1/namespaces/${userNamespace}/persistentvolumeclaims/${volume.persistentVolumeClaim.claimName}`)
+                            await axiosInstance.delete(`/api/v1/namespaces/${userNamespace}/persistentvolumeclaims/${volume.persistentVolumeClaim.claimName}`).catch((error: AxiosError) => {
+                                // 404 errors get ignored when deleting
+                                if (error.response && error.response.status != 404) {
+                                    api.setError(
+                                        errorMessage(error) ||
+                                        'Error while cleaning up pvc\'s. Please try again.',
+                                    );
+                                }
+                            })
                         }
                         // delete secret if any
                         if (volume.secret != undefined) {
-                            await axiosInstance.delete(`/api/v1/namespaces/${userNamespace}/secrets/${volume.secret.secretName}`)
+                            await axiosInstance.delete(`/api/v1/namespaces/${userNamespace}/secrets/${volume.secret.secretName}`).catch((error: AxiosError) => {
+                                // 404 errors get ignored when deleting
+                                if (error.response && error.response.status != 404) {
+                                    api.setError(
+                                        errorMessage(error) ||
+                                        'Error while cleaning up secrets. Please try again.',
+                                    );
+                                }
+                            })
                         }
                     }
                 }
@@ -75,7 +91,15 @@ const ServiceCatalog = ({isDisabled}: Props) => {
                         if (pvcs != undefined && pvcs.items.length > 0) {
                             for (const pvck in pvcs.items) {
                                 const pvc = pvcs.items[pvck]
-                                await axiosInstance.delete(`/api/v1/namespaces/${userNamespace}/persistentvolumeclaims/${pvc.metadata.name}`)
+                                await axiosInstance.delete(`/api/v1/namespaces/${userNamespace}/persistentvolumeclaims/${pvc.metadata.name}`).catch((error: AxiosError) => {
+                                    // 404 errors get ignored when deleting
+                                    if (error.response && error.response.status != 404) {
+                                        api.setError(
+                                            errorMessage(error) ||
+                                            'Error while cleaning the sts pvc. Please try again.',
+                                        );
+                                    }
+                                })
                             }
                         }
                     }
