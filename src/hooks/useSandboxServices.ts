@@ -2,7 +2,7 @@ import * as React from 'react';
 import openShiftIconUrl from '../images/Product_Icon-Red_Hat-OpenShift-RGB.svg';
 import dataScienceUrl from '../images/Product_Icon-Red_Hat-OpenShift_Data_Science-RGB.svg';
 import devSpacesUrl from '../images/Product_Icon-Red_Hat-OpenShift_Dev_Spaces-RGB.svg';
-import rhelUrl from '../images/RHEL.svg';
+import openshiftVirtualization from '../images/Product_Icon-Red_Hat-Openshift_virtualization-RGB.svg';
 import { useRegistrationContext } from './useRegistrationContext';
 
 export const OPENSHIFT_AI_ID = 'red-hat-data-science';
@@ -55,13 +55,13 @@ export const useSandboxServices = () => {
         launchUrl: signupData?.rhodsMemberURL,
       },
       {
-        id: 'ocp-virtualization',
+        id: 'openshift-virtualization',
         title: 'Red Hat',
-        subtitle: 'OCP Virtualization',
+        subtitle: 'OpenShift Virtualization',
         description:
-            'A hybrid cloud-ready development platform to build, deploy and run applications securely and containerize them for deployment.',
-        iconUrl: rhelUrl,
-        learnMoreUrl: 'https://developers.redhat.com/products/rhel/overview',
+            'OpenShift Virtualization provides the scalable, enterprise-grade virtualization functionality in Red Hat OpenShift. You can use it to run and manage virtual machines (VMs) alongside containerized application instances and infrastructure.',
+        iconUrl: openshiftVirtualization,
+        learnMoreUrl: 'https://developers.redhat.com/products/openshift/virtualization',
         launchUrl: `${signupData?.consoleURL}/k8s/ns/${signupData?.defaultUserNamespace}/virtualization-overview`,
       },
     ],
