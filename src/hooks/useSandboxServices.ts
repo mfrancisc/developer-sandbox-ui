@@ -59,7 +59,7 @@ export const useSandboxServices = () => {
         title: 'Red Hat',
         subtitle: 'OpenShift Virtualization',
         description:
-            'OpenShift Virtualization provides the scalable, enterprise-grade virtualization functionality in Red Hat OpenShift. You can use it to run and manage virtual machines (VMs) alongside containerized application instances and infrastructure.',
+          'OpenShift Virtualization provides the scalable, enterprise-grade virtualization functionality in Red Hat OpenShift. You can use it to run and manage virtual machines (VMs) alongside containerized application instances and infrastructure.',
         iconUrl: openshiftVirtualization,
         learnMoreUrl: 'https://developers.redhat.com/products/openshift/virtualization',
         launchUrl: `${signupData?.consoleURL}/k8s/ns/${signupData?.defaultUserNamespace}/virtualization-overview`,
