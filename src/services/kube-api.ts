@@ -176,7 +176,9 @@ export type AAPItem = {
         adminPasswordSecret: string;
         adminUser: string;
     };
-    spec: {};
+    spec: {
+        idle_aap: boolean;
+    };
     metadata: {
         name: string;
         uuid: string;

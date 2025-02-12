@@ -7,6 +7,8 @@ import {useRegistrationContext} from './useRegistrationContext';
 import useAxios, {InstanceAPI} from "./useAxios";
 import {errorMessage} from "../utils/utils";
 import {AxiosError} from 'axios'
+import useKubeApi from "./useKubeApi";
+import {getReadyCondition} from "../utils/conditions";
 
 export const OPENSHIFT_AI_ID = 'red-hat-data-science';
 export const ANSIBLE_ID = 'red-hat-ansible-automation-platform';
@@ -25,6 +27,7 @@ export type Service = {
 export const useSandboxServices = (handleShowAAPModal: () => void): Service[] => {
     const [{signupData}, api] = useRegistrationContext();
     const axiosInstance = useAxios(InstanceAPI.KUBE_API);
+    const {getAAPData} = useKubeApi();
 
     const handleAAPInstance = async () => {
         if (signupData == undefined) {
@@ -32,6 +35,25 @@ export const useSandboxServices = (handleShowAAPModal: () => void): Service[] =>
             return
         }
         api.setError(undefined);
+        const data = await getAAPData(signupData.defaultUserNamespace)
+        let status = getReadyCondition(data, (errorDetails: string)=> {
+            api.setError(errorDetails)
+        })
+
+        if (status == "idled" && data != undefined && data.items.length > 0) {
+            // we need to un-idle the instance
+            await axiosInstance.patch(`/apis/aap.ansible.com/v1alpha1/namespaces/${signupData.defaultUserNamespace}/ansibleautomationplatforms/${data.items[0].metadata.name}`, JSON.parse('[{"op": "replace", "path": "/spec/idle_aap", "value": "false"}]'), {}).catch((reason: AxiosError) => {
+                api.setError(
+                    errorMessage(reason) ||
+                    'Error while resuming instance. Please try again.',
+                );
+            }).finally(() => {
+                handleShowAAPModal()
+            })
+            return
+        }
+
+        // we need to provision a new instance
         await axiosInstance.post(`/apis/aap.ansible.com/v1alpha1/namespaces/${signupData.defaultUserNamespace}/ansibleautomationplatforms`, JSON.parse(AAPObject), {}).catch((reason: AxiosError) => {
             // resource already exists (response code 409) it's bypassed,
             // we can ignore it since we only allow for 1 aap instance to be created
@@ -53,8 +75,8 @@ export const useSandboxServices = (handleShowAAPModal: () => void): Service[] =>
         () => [
             {
                 id: 'red-hat-openshift',
-                title: 'Red Hat',
-                subtitle: 'OpenShift',
+                title: 'OpenShift',
+                subtitle: 'Red Hat',
                 description:
                     'A cloud-native application platform with everything you need to manage your development life cycle securely, including standardized workflows, support for multiple environments, continuous integration, and release management.',
                 iconUrl: openShiftIconUrl,
@@ -66,8 +88,8 @@ export const useSandboxServices = (handleShowAAPModal: () => void): Service[] =>
             },
             {
                 id: 'red-hat-dev-spaces',
-                title: 'Red Hat',
-                subtitle: 'Dev Spaces',
+                title: 'Openshift Dev Spaces',
+                subtitle: 'Red Hat',
                 description:
                     'A collaborative Kubernetes-native solution for rapid application development that delivers consistent developer environments on Red Hat OpenShift to allow anyone with a browser to contribute code in under two minutes.',
                 iconUrl: devSpacesUrl,
@@ -76,8 +98,8 @@ export const useSandboxServices = (handleShowAAPModal: () => void): Service[] =>
             },
             {
                 id: OPENSHIFT_AI_ID,
-                title: 'Red Hat',
-                subtitle: 'OpenShift AI',
+                title: 'OpenShift AI',
+                subtitle: 'Red Hat',
                 description:
                     'OpenShift AI gives data scientists and developers a powerful AI/ML platform for building AI-enabled applications.',
                 iconUrl: dataScienceUrl,
@@ -86,8 +108,8 @@ export const useSandboxServices = (handleShowAAPModal: () => void): Service[] =>
             },
             {
                 id: ANSIBLE_ID,
-                title: 'Red Hat',
-                subtitle: 'Ansible Automation Platform',
+                title: 'Ansible Automation Platform',
+                subtitle: 'Red Hat',
                 description:
                     'A comprehensive solution for managing the content and execution of your strategic automation.',
                 iconUrl: ansibleUrl,
@@ -111,6 +133,7 @@ const AAPObject: string = `
       "name":"sandbox-aap"
    },
    "spec":{
+      "idle_aap":false,
       "no_log":false,
       "api":{
          "replicas":1,

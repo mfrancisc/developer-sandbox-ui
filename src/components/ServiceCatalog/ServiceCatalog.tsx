@@ -13,6 +13,7 @@ import {Text, TextContent, TextVariants} from "@patternfly/react-core/dist/esm/c
 import {Spinner} from "@patternfly/react-core/dist/esm/components/Spinner";
 import {Button, Icon} from "@patternfly/react-core";
 import CheckIcon from "@patternfly/react-icons/dist/esm/icons/check-icon";
+import {useChrome} from '@redhat-cloud-services/frontend-components/useChrome';
 import {AxiosError} from "axios";
 import {errorMessage} from "../../utils/utils";
 import {useRegistrationContext} from "../../hooks/useRegistrationContext";
@@ -24,6 +25,7 @@ type Props = {
 };
 
 const ServiceCatalog = ({isDisabled}: Props) => {
+    const {auth} = useChrome();
     const [showAAPModal, setShowAAPModal] = React.useState(false);
     const handleShowAAPModal = () => {
         setShowAAPModal(true)
@@ -35,10 +37,11 @@ const ServiceCatalog = ({isDisabled}: Props) => {
     const disableAI = useFlag('platform.sandbox.openshift-ai-disabled');
     const {getAAPData, getDeployments, getStatefulSets, getPersistentVolumeClaims} = useKubeApi();
     const [AAPStatus, setAAPStatus] = React.useState<string>('');
+    const [AAPTrialEnabled, setAAPTrialEnabled] = React.useState<boolean>(false);
     const axiosInstance = useAxios(InstanceAPI.KUBE_API);
     const [{signupData}, api] = useRegistrationContext();
     const handleSetAAPCRError = (errorDetails: string) => {
-         api.setError(errorDetails)
+        api.setError(errorDetails)
     }
 
     async function deleteSecretsAndPVCs(k8sObjects: StatefulSetData | DeploymentData | void, userNamespace: string) {
@@ -158,6 +161,12 @@ const ServiceCatalog = ({isDisabled}: Props) => {
                     api.setError('Unable to retrieve signup data.');
                     return
                 }
+                const user = await auth.getUser();
+                if (user == undefined) {
+                    api.setError('Unable to retrieve chrome user data.');
+                    return
+                }
+                setAAPTrialEnabled(user.entitlements.ansible.is_entitled)
                 const data = await getAAPData(signupData.defaultUserNamespace)
                 let status = getReadyCondition(data, handleSetAAPCRError)
                 setAAPStatus(status);
@@ -174,6 +183,7 @@ const ServiceCatalog = ({isDisabled}: Props) => {
             clearInterval(handle);
         };
     }, [AAPStatus]);
+
 
     const defaultLaunchButton = (o: ButtonsFuncOptions) => {
         return (
@@ -199,6 +209,40 @@ const ServiceCatalog = ({isDisabled}: Props) => {
     }
 
     const AAPButtonsFunc = ((o: ButtonsFuncOptions) => {
+
+        // the user has first to enable the trial subscription
+        // before launching the AAP instance
+        if (!AAPTrialEnabled) {
+            return (
+                <>
+                    <TextContent>
+                        <Text component={TextVariants.p}>
+                            <b>Note: Requires AAP trial
+                                <span style={{color:'red'}}>*</span>
+                            </b>
+                        </Text>
+                    </TextContent>
+                    <br/>
+                    <AnalyticsButton
+                        component="a"
+                        href={"https://www.redhat.com/en/technologies/management/ansible/dev-sandbox/trial"}
+                        className="pf-v5-u-mr-md"
+                        rel="noopener"
+                        analytics={{
+                            event: 'DevSandbox AAP Start Trial',
+                            properties: {
+                                name: `DevSandbox AAP Start Trial`,
+                                url: "",
+                            },
+                        }}
+                    >
+                        Get AAP Trial
+                    </AnalyticsButton>
+                </>
+            );
+        }
+
+
         switch (o.status) {
             case 'provisioning':
             case 'unknown':
@@ -226,14 +270,43 @@ const ServiceCatalog = ({isDisabled}: Props) => {
                             component="span"
                             isInline
                             onClick={handleShowAAPModal}
-                            aria-label="Open"
-                        >Open
+                            aria-label="Launch"
+                        >Launch
                         </Button>
+                        &nbsp;
                         &nbsp;
                     </>
                 );
             default:
-                return defaultLaunchButton(o);
+                return (
+                    <>
+                        <TextContent>
+                            <Text component={TextVariants.p}>
+                                <b>Note:</b> instance might take up to 30 minutes to provision.
+                                    <span style={{color:'red'}}>*</span>
+                            </Text>
+                        </TextContent>
+                        <br/>
+                        <AnalyticsButton
+                            component="a"
+                            isDisabled={o.showDisabledButton}
+                            href={o.launchUrl}
+                            className="pf-v5-u-mr-md"
+                            target="_blank"
+                            rel="noopener"
+                            onClick={o.onClickFunc}
+                            analytics={{
+                                event: 'DevSandbox Service Launch',
+                                properties: {
+                                    name: `${o.title} ${o.subtitle}`,
+                                    url: o.launchUrl ? "" : "",
+                                },
+                            }}
+                        >
+                            Provision
+                        </AnalyticsButton>
+                    </>
+                );
         }
     })
 

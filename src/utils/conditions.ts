@@ -17,6 +17,11 @@ export let getReadyCondition = (data: AAPData | undefined, setError: (errorDetai
         return "unknown"
     }
 
+    // check if instance is idled
+    if (data.items[0].spec.idle_aap) {
+        return "idled"
+    }
+
     // we can assume that there will be only one aap instance
     let conditions = data.items[0].status.conditions
 

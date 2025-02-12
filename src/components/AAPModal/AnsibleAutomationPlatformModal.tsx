@@ -117,24 +117,19 @@ const AAPModal = ({onClose, initialStatus}: Props) => {
                                 <TextContent>
                                     <Text component={TextVariants.p}>
                                         Your AAP instance might take up to 30 minutes to provision.
-                                        Once ready, your instance will be automatically turned off after 12 hours.
+                                        Once ready, your instance will remain active for 12 hours.
                                         <br/>
-                                        While you wait, start your prerequisite AAP trial subscription.
-                                    </Text>
-                                    <Text component={TextVariants.p}>
-                                        <a target="_blank" rel="noreferrer">Start AAP Trial
-                                            subscription <ExternalLinkAltIcon></ExternalLinkAltIcon></a>
+                                        While you wait, explore the &nbsp;
+                                        <a target="_blank" rel="noreferrer" href={"https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform"}>AAP documentation
+                                            <ExternalLinkAltIcon></ExternalLinkAltIcon></a>.
                                     </Text>
                                 </TextContent>
                                 <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
                                     <Spinner size="xl"/>
                                 </Bullseye>
-                                <TextContent>
-                                    <Text component={TextVariants.small}>
-                                        You can close this modal, and follow the status from the AAP card on the screen
-                                        in the background.
-                                    </Text>
-                                </TextContent>
+                                    <Alert variant="info" isInline title="You can close this window, and follow the status from the AAP card on the screen
+                                        in the background." />
+                                <br/>
                                 <Button
                                     variant="link"
                                     size="sm"
