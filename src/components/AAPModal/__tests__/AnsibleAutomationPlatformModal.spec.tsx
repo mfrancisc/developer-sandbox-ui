@@ -1,15 +1,14 @@
-import * as React from "react";
-import YAML from "yaml";
-import { act, render, screen, waitFor, within } from "@testing-library/react";
-import AnsibleAutomationPlatformModal from "../AnsibleAutomationPlatformModal";
-import useKubeApi from "../../../hooks/useKubeApi";
-import useRegistrationService from "../../../hooks/useRegistrationService";
-import { Buffer } from "buffer";
+import * as React from 'react';
+import YAML from 'yaml';
+import { act, render, screen, waitFor, within } from '@testing-library/react';
+import AnsibleAutomationPlatformModal from '../AnsibleAutomationPlatformModal';
+import useKubeApi from '../../../hooks/useKubeApi';
+import useRegistrationService from '../../../hooks/useRegistrationService';
+import { Buffer } from 'buffer';
 
-const encode = (str: string): string =>
-  Buffer.from(str, "binary").toString("base64");
+const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64');
 
-jest.mock("../../../hooks/useRegistrationService", () => {
+jest.mock('../../../hooks/useRegistrationService', () => {
   const mock = {
     getSignupData: jest.fn(),
   };
@@ -19,7 +18,7 @@ jest.mock("../../../hooks/useRegistrationService", () => {
   };
 });
 
-jest.mock("../../../hooks/useKubeApi", () => {
+jest.mock('../../../hooks/useKubeApi', () => {
   const mock = {
     getAAPData: jest.fn(),
     getSecret: jest.fn(),
@@ -30,7 +29,7 @@ jest.mock("../../../hooks/useKubeApi", () => {
   };
 });
 
-describe("AnsibleAutomationPlatformModal", () => {
+describe('AnsibleAutomationPlatformModal', () => {
   let getAAPDataMock: jest.Mock;
   let getSecretMock: jest.Mock;
   let getSignupDataMock: jest.Mock;
@@ -48,60 +47,47 @@ describe("AnsibleAutomationPlatformModal", () => {
 
   function requiredModalTextWhenProvisioning() {
     // title should be there
-    const modalTitle = screen.getByText(
-      "Provisioning Ansible Automation Platform (AAP) instance",
-    );
+    const modalTitle = screen.getByText('Provisioning Ansible Automation Platform (AAP) instance');
     expect(modalTitle).toBeDefined();
     // modal content should be there
-    const { getByText } = within(screen.getByTestId("modal-content"));
+    const { getByText } = within(screen.getByTestId('modal-content'));
     expect(
       getByText(
-        "Your AAP instance might take up to 30 minutes to provision. Once ready, your instance will remain active for 12 hours.",
+        'Your AAP instance might take up to 30 minutes to provision. Once ready, your instance will remain active for 12 hours.',
       ),
     ).toBeInTheDocument();
-    expect(
-      screen.getByRole("link", { name: "AAP documentation" }),
-    ).toHaveAttribute(
-      "href",
-      "https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform",
+    expect(screen.getByRole('link', { name: 'AAP documentation' })).toHaveAttribute(
+      'href',
+      'https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform',
     );
     // spinner should be there
-    const progressBar = screen.getByRole("progressbar");
+    const progressBar = screen.getByRole('progressbar');
     expect(progressBar).toBeDefined();
     // close modal button should be available
-    let button = screen.queryByText("Close");
+    const button = screen.queryByText('Close');
     button?.click();
     expect(mockCallBack).toHaveBeenCalled();
   }
 
-  it("modal should say that provisioning is in progress when initialStatus is unknown", () => {
-    render(
-      <AnsibleAutomationPlatformModal
-        onClose={mockCallBack}
-        initialStatus="unknown"
-      />,
-    );
+  it('modal should say that provisioning is in progress when initialStatus is unknown', () => {
+    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
     requiredModalTextWhenProvisioning();
   });
 
-  it("modal should say that provisioning is in progress when initialStatus in provisioning", () => {
-    render(
-      <AnsibleAutomationPlatformModal
-        onClose={mockCallBack}
-        initialStatus="provisioning"
-      />,
-    );
+  it('modal should say that provisioning is in progress when initialStatus in provisioning', () => {
+    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="provisioning" />);
     requiredModalTextWhenProvisioning();
   });
 
-  it("should render when AAP is ready", async () => {
+  it('should render when AAP is ready', async () => {
+    window.open = jest.fn();
     getSignupDataMock.mockReturnValue({
-      defaultUserNamespace: "testnamespace",
+      defaultUserNamespace: 'testnamespace',
       status: {
         ready: false,
       },
     });
-    const ansibleUIPassword = "mypassword"; // notsecret
+    const ansibleUIPassword = 'mypassword'; // notsecret
     getSecretMock.mockReturnValue({
       data: {
         password: encode(ansibleUIPassword), // notsecret
@@ -140,12 +126,7 @@ items:
         `),
     );
     act(() => {
-      render(
-        <AnsibleAutomationPlatformModal
-          onClose={mockCallBack}
-          initialStatus="unknown"
-        />,
-      );
+      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
     });
     // Modal is still in provisioning mode
     requiredModalTextWhenProvisioning();
@@ -153,24 +134,22 @@ items:
     // the open UI button and credentials should be rendered
     jest.advanceTimersByTime(2000);
     await waitFor(() => {
-      const modalTitle = screen.getByText(
-        "Ansible Automation Platform instance provisioned",
-      );
+      const modalTitle = screen.getByText('Ansible Automation Platform instance provisioned');
       expect(modalTitle).toBeDefined();
-      // UI link should be there
-      expect(
-        screen.queryByText("Go to Ansible Automation Platform"),
-      ).toHaveAttribute("href", "https://sandbox-aap-test.com");
       // credentials should be there
-      expect(screen.getByText("admin")).toBeDefined();
+      expect(screen.getByText('admin')).toBeDefined();
       // by default the password field si masked
-      expect(
-        screen.getByText("*".repeat(ansibleUIPassword.length)),
-      ).toBeDefined(); // notsecret
+      expect(screen.getByText('*'.repeat(ansibleUIPassword.length))).toBeDefined(); // notsecret
       // show password button should be there
-      expect(screen.queryByRole("Show password")).toBeDefined();
+      expect(screen.queryByRole('Show password')).toBeDefined();
       // copy password button should be there
-      expect(screen.queryByRole("Copy password")).toBeDefined();
+      expect(screen.queryByRole('Copy password')).toBeDefined();
+      // open UI button should be there
+      const openAAPUIButton = screen.queryByText('Go to Ansible Automation Platform');
+      // when clicked, it should open the UI link from the AAP CR
+      openAAPUIButton?.click();
+      expect(window.open).toHaveBeenCalledTimes(1);
+      expect(window.open).toHaveBeenCalledWith('https://sandbox-aap-test.com', '_blank');
     });
   });
 });

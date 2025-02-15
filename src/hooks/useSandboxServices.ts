@@ -1,18 +1,18 @@
-import React from "react";
-import openShiftIconUrl from "../images/Product_Icon-Red_Hat-OpenShift-RGB.svg";
-import dataScienceUrl from "../images/Product_Icon-Red_Hat-OpenShift_Data_Science-RGB.svg";
-import devSpacesUrl from "../images/Product_Icon-Red_Hat-OpenShift_Dev_Spaces-RGB.svg";
-import ansibleUrl from "../images/Product_Icon-Red_Hat-Ansible_Automation_Platform-RGB.svg";
-import useAxios, { InstanceAPI } from "./useAxios";
-import { errorMessage } from "../utils/utils";
-import { AxiosError } from "axios";
-import useKubeApi from "./useKubeApi";
-import { getReadyCondition } from "../utils/conditions";
-import openshiftVirtualization from "../images/Product_Icon-Red_Hat-Openshift_virtualization-RGB.svg";
-import { useRegistrationContext } from "./useRegistrationContext";
+import React from 'react';
+import openShiftIconUrl from '../images/Product_Icon-Red_Hat-OpenShift-RGB.svg';
+import dataScienceUrl from '../images/Product_Icon-Red_Hat-OpenShift_Data_Science-RGB.svg';
+import devSpacesUrl from '../images/Product_Icon-Red_Hat-OpenShift_Dev_Spaces-RGB.svg';
+import ansibleUrl from '../images/Product_Icon-Red_Hat-Ansible_Automation_Platform-RGB.svg';
+import useAxios, { InstanceAPI } from './useAxios';
+import { errorMessage } from '../utils/utils';
+import { AxiosError } from 'axios';
+import useKubeApi from './useKubeApi';
+import { getReadyCondition } from '../utils/conditions';
+import openshiftVirtualization from '../images/Product_Icon-Red_Hat-Openshift_virtualization-RGB.svg';
+import { useRegistrationContext } from './useRegistrationContext';
 
-export const OPENSHIFT_AI_ID = "red-hat-data-science";
-export const ANSIBLE_ID = "red-hat-ansible-automation-platform";
+export const OPENSHIFT_AI_ID = 'red-hat-data-science';
+export const ANSIBLE_ID = 'red-hat-ansible-automation-platform';
 
 export type Service = {
   id: string;
@@ -25,39 +25,32 @@ export type Service = {
   onClickFunc?: () => Promise<void>;
 };
 
-export const useSandboxServices = (
-  handleShowAAPModal: () => void,
-): Service[] => {
+export const useSandboxServices = (handleShowAAPModal: () => void): Service[] => {
   const [{ signupData }, api] = useRegistrationContext();
   const axiosInstance = useAxios(InstanceAPI.KUBE_API);
   const { getAAPData } = useKubeApi();
 
   const handleAAPInstance = async () => {
     if (signupData == undefined) {
-      api.setError("Unable to retrieve signup data.");
+      api.setError('Unable to retrieve signup data.');
       return;
     }
     api.setError(undefined);
     const data = await getAAPData(signupData.defaultUserNamespace);
-    let status = getReadyCondition(data, (errorDetails: string) => {
+    const status = getReadyCondition(data, (errorDetails: string) => {
       api.setError(errorDetails);
     });
 
-    if (status == "idled" && data != undefined && data.items.length > 0) {
+    if (status == 'idled' && data != undefined && data.items.length > 0) {
       // we need to un-idle the instance
       await axiosInstance
         .patch(
           `/apis/aap.ansible.com/v1alpha1/namespaces/${signupData.defaultUserNamespace}/ansibleautomationplatforms/${data.items[0].metadata.name}`,
-          JSON.parse(
-            '[{"op": "replace", "path": "/spec/idle_aap", "value": "false"}]',
-          ),
+          JSON.parse('[{"op": "replace", "path": "/spec/idle_aap", "value": "false"}]'),
           {},
         )
         .catch((reason: AxiosError) => {
-          api.setError(
-            errorMessage(reason) ||
-              "Error while resuming instance. Please try again.",
-          );
+          api.setError(errorMessage(reason) || 'Error while resuming instance. Please try again.');
         })
         .finally(() => {
           handleShowAAPModal();
@@ -79,8 +72,7 @@ export const useSandboxServices = (
           // report system error
           console.log(reason.message);
           api.setError(
-            errorMessage(reason) ||
-              "Error while creating AAP instance. Please try again.",
+            errorMessage(reason) || 'Error while creating AAP instance. Please try again.',
           );
         }
       })
@@ -92,60 +84,56 @@ export const useSandboxServices = (
   return React.useMemo<Service[]>(
     () => [
       {
-        id: "red-hat-openshift",
-        title: "OpenShift",
-        subtitle: "Red Hat",
+        id: 'red-hat-openshift',
+        title: 'OpenShift',
+        subtitle: '',
         description:
-          "A cloud-native application platform with everything you need to manage your development life cycle securely, including standardized workflows, support for multiple environments, continuous integration, and release management.",
+          'A cloud-native application platform with everything you need to manage your development life cycle securely, including standardized workflows, support for multiple environments, continuous integration, and release management.',
         iconUrl: openShiftIconUrl,
-        learnMoreUrl:
-          "https://developers.redhat.com/products/openshift/overview",
+        learnMoreUrl: 'https://developers.redhat.com/products/openshift/overview',
         launchUrl:
           signupData?.consoleURL && signupData?.defaultUserNamespace
             ? `${signupData?.consoleURL}/add/ns/${signupData?.defaultUserNamespace}`
             : signupData?.consoleURL,
       },
       {
-        id: "red-hat-dev-spaces",
-        title: "Openshift Dev Spaces",
-        subtitle: "Red Hat",
+        id: 'red-hat-dev-spaces',
+        title: 'Openshift Dev Spaces',
+        subtitle: '',
         description:
-          "A collaborative Kubernetes-native solution for rapid application development that delivers consistent developer environments on Red Hat OpenShift to allow anyone with a browser to contribute code in under two minutes.",
+          'A collaborative Kubernetes-native solution for rapid application development that delivers consistent developer environments on Red Hat OpenShift to allow anyone with a browser to contribute code in under two minutes.',
         iconUrl: devSpacesUrl,
-        learnMoreUrl:
-          "https://developers.redhat.com/products/openshift-dev-spaces/overview",
+        learnMoreUrl: 'https://developers.redhat.com/products/openshift-dev-spaces/overview',
         launchUrl: signupData?.cheDashboardURL,
       },
       {
         id: OPENSHIFT_AI_ID,
-        title: "OpenShift AI",
-        subtitle: "Red Hat",
+        title: 'OpenShift AI',
+        subtitle: '',
         description:
-          "OpenShift AI gives data scientists and developers a powerful AI/ML platform for building AI-enabled applications.",
+          'OpenShift AI gives data scientists and developers a powerful AI/ML platform for building AI-enabled applications.',
         iconUrl: dataScienceUrl,
-        learnMoreUrl:
-          "https://developers.redhat.com/products/red-hat-openshift-ai/overview ",
+        learnMoreUrl: 'https://developers.redhat.com/products/red-hat-openshift-ai/overview ',
         launchUrl: signupData?.rhodsMemberURL,
       },
       {
-        id: "openshift-virtualization",
-        title: "OpenShift Virtualization",
-        subtitle: "Red Hat",
+        id: 'openshift-virtualization',
+        title: 'OpenShift Virtualization',
+        subtitle: '',
         description:
-          "OpenShift Virtualization provides the scalable, enterprise-grade virtualization functionality in Red Hat OpenShift. You can use it to run and manage virtual machines (VMs) alongside containerized application instances and infrastructure.",
+          'OpenShift Virtualization provides the scalable, enterprise-grade virtualization functionality in Red Hat OpenShift. You can use it to run and manage virtual machines (VMs) alongside containerized application instances and infrastructure.',
         iconUrl: openshiftVirtualization,
-        learnMoreUrl:
-          "https://developers.redhat.com/products/openshift/virtualization",
+        learnMoreUrl: 'https://developers.redhat.com/products/openshift/virtualization',
         launchUrl: `${signupData?.consoleURL}/k8s/ns/${signupData?.defaultUserNamespace}/virtualization-overview`,
       },
       {
         id: ANSIBLE_ID,
-        title: "Ansible Automation Platform",
-        subtitle: "Red Hat",
+        title: 'Ansible Automation Platform',
+        subtitle: '',
         description:
-          "A comprehensive solution for managing the content and execution of your strategic automation.",
+          'A comprehensive solution for managing the content and execution of your strategic automation.',
         iconUrl: ansibleUrl,
-        learnMoreUrl: "https://developers.redhat.com/products/ansible/overview",
+        learnMoreUrl: 'https://developers.redhat.com/products/ansible/overview',
         onClickFunc: handleAAPInstance,
       },
     ],

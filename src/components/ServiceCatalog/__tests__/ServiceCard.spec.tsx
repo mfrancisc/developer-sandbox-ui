@@ -1,15 +1,10 @@
-import React from "react";
-import { render, screen, within } from "@testing-library/react";
-import ServiceCard, { ButtonsFuncOptions } from "../ServiceCard";
-import AnalyticsButton from "../../AnalyticsButton/AnalyticsButton";
-import {
-  Text,
-  TextContent,
-  TextVariants,
-} from "@patternfly/react-core/dist/esm/components/Text";
-import { Spinner } from "@patternfly/react-core/dist/esm/components/Spinner";
+import React from 'react';
+import { render, screen, within } from '@testing-library/react';
+import ServiceCard, { ButtonsFuncOptions } from '../ServiceCard';
+import AnalyticsButton from '../../AnalyticsButton/AnalyticsButton';
+import { Text, TextContent, TextVariants } from '@patternfly/react-core/dist/esm/components/Text';
 
-describe("ServiceCard", () => {
+describe('ServiceCard', () => {
   const mockCallBack = jest.fn();
   const defaultLaunchButton = (o: ButtonsFuncOptions) => {
     return (
@@ -22,10 +17,10 @@ describe("ServiceCard", () => {
         rel="noopener"
         onClick={o.onClickFunc}
         analytics={{
-          event: "DevSandbox Service Launch",
+          event: 'DevSandbox Service Launch',
           properties: {
             name: `${o.title} ${o.subtitle}`,
-            url: o.launchUrl ? "" : "",
+            url: o.launchUrl ? '' : '',
           },
         }}
       >
@@ -34,7 +29,7 @@ describe("ServiceCard", () => {
     );
   };
 
-  it("should display launch link", () => {
+  it('should display launch link', () => {
     render(
       <ServiceCard
         description=""
@@ -44,21 +39,21 @@ describe("ServiceCard", () => {
         title=""
         launchUrl="test"
         buttonOptions={{
-          title: "",
-          subtitle: "",
+          title: '',
+          subtitle: '',
           showDisabledButton: false,
-          launchUrl: "test",
+          launchUrl: 'test',
           onClickFunc: mockCallBack,
         }}
         buttonsFunc={defaultLaunchButton}
       />,
     );
-    const link = screen.queryByRole("link", { name: "Launch" });
+    const link = screen.queryByRole('link', { name: 'Launch' });
     expect(link).toBeInTheDocument();
-    expect(link).toHaveAttribute("href", "test");
+    expect(link).toHaveAttribute('href', 'test');
   });
 
-  it("should not display launch link if missing launch url", () => {
+  it('should not display launch link if missing launch url', () => {
     render(
       <ServiceCard
         description=""
@@ -67,20 +62,18 @@ describe("ServiceCard", () => {
         subtitle=""
         title=""
         buttonOptions={{
-          title: "",
-          subtitle: "",
+          title: '',
+          subtitle: '',
           showDisabledButton: false,
           onClickFunc: mockCallBack,
         }}
         buttonsFunc={defaultLaunchButton}
       />,
     );
-    expect(
-      screen.queryByRole("link", { name: "Launch" }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Launch' })).not.toBeInTheDocument();
   });
 
-  it("should invoke the custom onclick function if provided", () => {
+  it('should invoke the custom onclick function if provided', () => {
     render(
       <ServiceCard
         description=""
@@ -89,22 +82,22 @@ describe("ServiceCard", () => {
         subtitle=""
         title=""
         buttonOptions={{
-          title: "",
-          subtitle: "",
+          title: '',
+          subtitle: '',
           showDisabledButton: false,
-          launchUrl: "test",
+          launchUrl: 'test',
           onClickFunc: mockCallBack,
         }}
         buttonsFunc={defaultLaunchButton}
       />,
     );
-    let button = screen.queryByText("Launch");
+    const button = screen.queryByText('Launch');
     button?.click();
     expect(mockCallBack).toHaveBeenCalled();
   });
 
-  it("should display status", () => {
-    let showStatus = (status?: string): React.ReactElement => {
+  it('should display status', () => {
+    const showStatus = (status?: string): React.ReactElement => {
       return (
         <TextContent data-testid="status-text">
           <Text component={TextVariants.p}>{status}</Text>
@@ -119,18 +112,18 @@ describe("ServiceCard", () => {
         subtitle=""
         title=""
         buttonOptions={{
-          title: "",
-          subtitle: "",
+          title: '',
+          subtitle: '',
           showDisabledButton: false,
-          launchUrl: "test",
+          launchUrl: 'test',
           onClickFunc: mockCallBack,
         }}
-        status={"Provisioning"}
+        status={'Provisioning'}
         helperText={showStatus}
         buttonsFunc={defaultLaunchButton}
       />,
     );
-    const { getByText } = within(screen.getByTestId("status-text"));
-    expect(getByText("Provisioning")).toBeInTheDocument();
+    const { getByText } = within(screen.getByTestId('status-text'));
+    expect(getByText('Provisioning')).toBeInTheDocument();
   });
 });

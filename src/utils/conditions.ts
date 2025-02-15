@@ -1,6 +1,6 @@
-import { AAPData, StatusCondition } from "../services/kube-api";
+import { AAPData, StatusCondition } from '../services/kube-api';
 
-export let getReadyCondition = (
+export const getReadyCondition = (
   data: AAPData | undefined,
   setError: (errorDetails: string) => void,
 ): string => {
@@ -13,62 +13,53 @@ export let getReadyCondition = (
    * Running    False     * 27 Dec 2024, 18:37 * Running  Running reconciliation
    */
   if (data == undefined || data.items.length == 0) {
-    return "";
+    return '';
   }
 
-  if (
-    data.items[0].status == undefined ||
-    data.items[0].status.conditions.length == 0
-  ) {
-    return "unknown";
+  if (data.items[0].status == undefined || data.items[0].status.conditions.length == 0) {
+    return 'unknown';
   }
 
   // check if instance is idled
   if (data.items[0].spec != undefined && data.items[0].spec.idle_aap) {
-    return "idled";
+    return 'idled';
   }
 
   // we can assume that there will be only one aap instance
-  let conditions = data.items[0].status.conditions;
+  const conditions = data.items[0].status.conditions;
 
   // if the Successful condition is set to true it means the instance is ready
-  let [isSuccessful, conditionSuccessful] = isConditionTrue(
-    "Successful",
-    conditions,
-  );
-  if (isSuccessful && conditionSuccessful?.reason == "Successful") {
-    return "ready";
+  const [isSuccessful, conditionSuccessful] = isConditionTrue('Successful', conditions);
+  if (isSuccessful && conditionSuccessful?.reason == 'Successful') {
+    return 'ready';
   }
 
   // If the Failure condition is set to True, then we need to return the error
-  let [hasFailed, condition] = isConditionTrue("Failure", conditions);
+  const [hasFailed, condition] = isConditionTrue('Failure', conditions);
   if (hasFailed) {
     if (condition) {
       setError(condition.message);
     }
-    return "unknown";
+    return 'unknown';
   }
 
   // If the Running condition is set to true it means that the instance it's still provisioning
-  let [isStillRunning, conditionRunning] = isConditionTrue(
-    "Running",
-    conditions,
-  );
+  const [isStillRunning] = isConditionTrue('Running', conditions);
   if (isStillRunning) {
-    return "provisioning";
+    return 'provisioning';
   }
 
   // unable to find the ready condition
-  return "unknown";
+  return 'unknown';
 };
 
 // isConditionTrue checks if a given condition type exists and it's status is set to True
-let isConditionTrue = (
+const isConditionTrue = (
   condType: string,
   conditions: StatusCondition[],
 ): [boolean, StatusCondition | null] => {
-  for (var condition of conditions) {
-    if (condition.type == condType && condition.status == "True") {
+  for (const condition of conditions) {
+    if (condition.type == condType && condition.status == 'True') {
       return [true, condition];
     }
   }
