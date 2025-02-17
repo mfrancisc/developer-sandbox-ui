@@ -102,12 +102,12 @@ describe('AnsibleAutomationPlatformModal', () => {
   }
 
   it('modal should say that provisioning is in progress when initialStatus is unknown', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus='unknown' />);
+    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
     requiredModalTextWhenProvisioning();
   });
 
   it('modal should say that provisioning is in progress when initialStatus in provisioning', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus='provisioning' />);
+    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="provisioning" />);
     requiredModalTextWhenProvisioning();
   });
 
@@ -125,12 +125,9 @@ describe('AnsibleAutomationPlatformModal', () => {
         password: encode(ansibleUIPassword), // notsecret
       },
     });
-    getAAPDataMock.mockReturnValue(
-      mockedAAPCR,
-    )
-    ;
+    getAAPDataMock.mockReturnValue(mockedAAPCR);
     act(() => {
-      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus='unknown' />);
+      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
     });
     // Modal is still in provisioning mode
     requiredModalTextWhenProvisioning();
