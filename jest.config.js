@@ -9,7 +9,7 @@ module.exports = {
     '\\.(css|scss)$': 'identity-obj-proxy'
   },
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/(?!(lodash-es|@redhat-cloud-services|@openshift|@patternfly|uuid))',
+    '<rootDir>/node_modules/(?!(lodash-es|@redhat-cloud-services|@openshift|@patternfly|uuid|yaml))',
   ],
   transform: {
     '^.+\\.(ts|js)x?$': ['ts-jest'],

@@ -1,10 +1,42 @@
 import * as React from 'react';
-import YAML from 'yaml';
 import { act, render, screen, waitFor, within } from '@testing-library/react';
 import AnsibleAutomationPlatformModal from '../AnsibleAutomationPlatformModal';
 import useKubeApi from '../../../hooks/useKubeApi';
 import useRegistrationService from '../../../hooks/useRegistrationService';
 import { Buffer } from 'buffer';
+
+import yamlParse from 'yaml';
+
+const mockedAAPCR = yamlParse.parse(`
+apiVersion: v1
+items:
+- apiVersion: aap.ansible.com/v1alpha1
+  kind: AnsibleAutomationPlatform
+  metadata:
+    creationTimestamp: "2025-01-04T16:51:17Z"
+    name: sandbox-aap
+    uid: 60d90446-9c1f-4875-b00c-ac8954a67397
+  spec:
+  status:
+    URL: https://sandbox-aap-test.com
+    adminPasswordSecret: sandbox-aap-admin-password
+    adminUser: admin
+    conditions:
+    - lastTransitionTime: "2025-01-04T17:10:07Z"
+      message: ""
+      reason: ""
+      status: "False"
+      type: Failure
+    - lastTransitionTime: "2025-01-04T17:16:50Z"
+      message: Last reconciliation succeeded
+      reason: Successful
+      status: "True"
+      type: Successful
+    - lastTransitionTime: "2025-01-04T16:51:17Z"
+      message: Running reconciliation
+      reason: Running
+      status: "True"
+        `);
 
 const encode = (str: string): string => Buffer.from(str, 'binary').toString('base64');
 
@@ -70,12 +102,12 @@ describe('AnsibleAutomationPlatformModal', () => {
   }
 
   it('modal should say that provisioning is in progress when initialStatus is unknown', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
+    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus='unknown' />);
     requiredModalTextWhenProvisioning();
   });
 
   it('modal should say that provisioning is in progress when initialStatus in provisioning', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="provisioning" />);
+    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus='provisioning' />);
     requiredModalTextWhenProvisioning();
   });
 
@@ -94,39 +126,11 @@ describe('AnsibleAutomationPlatformModal', () => {
       },
     });
     getAAPDataMock.mockReturnValue(
-      YAML.parse(`
-apiVersion: v1
-items:
-- apiVersion: aap.ansible.com/v1alpha1
-  kind: AnsibleAutomationPlatform
-  metadata:
-    creationTimestamp: "2025-01-04T16:51:17Z"
-    name: sandbox-aap
-    uid: 60d90446-9c1f-4875-b00c-ac8954a67397
-  spec:
-  status:
-    URL: https://sandbox-aap-test.com
-    adminPasswordSecret: sandbox-aap-admin-password
-    adminUser: admin
-    conditions:
-    - lastTransitionTime: "2025-01-04T17:10:07Z"
-      message: ""
-      reason: ""
-      status: "False"
-      type: Failure
-    - lastTransitionTime: "2025-01-04T17:16:50Z"
-      message: Last reconciliation succeeded
-      reason: Successful
-      status: "True"
-      type: Successful
-    - lastTransitionTime: "2025-01-04T16:51:17Z"
-      message: Running reconciliation
-      reason: Running
-      status: "True"
-        `),
-    );
+      mockedAAPCR,
+    )
+    ;
     act(() => {
-      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
+      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus='unknown' />);
     });
     // Modal is still in provisioning mode
     requiredModalTextWhenProvisioning();
