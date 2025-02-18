@@ -4,26 +4,23 @@ import {
   Alert,
   AlertActionCloseButton,
   AlertVariant,
-} from '@patternfly/react-core/dist/dynamic/components/Alert';
-import { Bullseye } from '@patternfly/react-core/dist/dynamic/layouts/Bullseye';
-import { Modal } from '@patternfly/react-core/dist/dynamic/components/Modal';
-import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
-import {
+  Bullseye,
+  Button,
+  ClipboardCopy,
+  Modal,
+  Spinner,
   Text,
   TextContent,
   TextVariants,
-} from '@patternfly/react-core/dist/dynamic/components/Text';
-import { Title } from '@patternfly/react-core/dist/dynamic/components/Title';
+  Title,
+} from '@patternfly/react-core';
+import { ExternalLinkAltIcon, EyeIcon, EyeSlashIcon } from '@patternfly/react-icons';
 import { errorMessage } from '../../utils/utils';
 import { AAPData } from '../../services/kube-api';
 import { SHORT_INTERVAL } from '../../utils/const';
 import useKubeApi from '../../hooks/useKubeApi';
-import { Button, ClipboardCopy } from '@patternfly/react-core';
 import useRegistrationService from '../../hooks/useRegistrationService';
-import EyeSlashIcon from '@patternfly/react-icons/dist/esm/icons/eye-slash-icon';
-import EyeIcon from '@patternfly/react-icons/dist/esm/icons/eye-icon';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
-import { ExternalLinkAltIcon } from '@patternfly/react-icons';
 import { getReadyCondition } from '../../utils/conditions';
 
 type Props = {

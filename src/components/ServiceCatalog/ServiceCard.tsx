@@ -1,15 +1,13 @@
-import { ButtonVariant } from '@patternfly/react-core/dist/dynamic/components/Button';
 import {
+  ButtonVariant,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
-} from '@patternfly/react-core/dist/dynamic/components/Card';
-import {
   Text,
   TextContent,
   TextVariants,
-} from '@patternfly/react-core/dist/dynamic/components/Text';
+} from '@patternfly/react-core';
 import * as React from 'react';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
 

@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { Gallery, GalleryItem } from '@patternfly/react-core/dist/dynamic/layouts/Gallery';
+import { Gallery, GalleryItem } from '@patternfly/react-core';
 import {
+  Button,
   HelperText,
   HelperTextItem,
-} from '@patternfly/react-core/dist/dynamic/components/HelperText';
+  Icon,
+  Spinner,
+  Text,
+  TextContent,
+  TextVariants,
+} from '@patternfly/react-core';
 import { useFlag } from '@unleash/proxy-client-react';
 import { ANSIBLE_ID, OPENSHIFT_AI_ID, useSandboxServices } from '../../hooks/useSandboxServices';
 import ServiceCard, { ButtonsFuncOptions } from './ServiceCard';
@@ -12,10 +18,7 @@ import useKubeApi from '../../hooks/useKubeApi';
 import { getReadyCondition } from '../../utils/conditions';
 import { SHORT_INTERVAL } from '../../utils/const';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
-import { Text, TextContent, TextVariants } from '@patternfly/react-core/dist/esm/components/Text';
-import { Spinner } from '@patternfly/react-core/dist/esm/components/Spinner';
-import { Button, Icon } from '@patternfly/react-core';
-import CheckIcon from '@patternfly/react-icons/dist/esm/icons/check-icon';
+import { CheckIcon } from '@patternfly/react-icons';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { AxiosError } from 'axios';
 import { errorMessage } from '../../utils/utils';

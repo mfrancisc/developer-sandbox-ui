@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, within } from '@testing-library/react';
 import ServiceCard, { ButtonsFuncOptions } from '../ServiceCard';
 import AnalyticsButton from '../../AnalyticsButton/AnalyticsButton';
-import { Text, TextContent, TextVariants } from '@patternfly/react-core/dist/esm/components/Text';
+import { Text, TextContent, TextVariants } from '@patternfly/react-core';
 
 describe('ServiceCard', () => {
   const mockCallBack = jest.fn();
