@@ -6,13 +6,18 @@ module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
   moduleNameMapper: {
-    '\\.(css|scss)$': 'identity-obj-proxy'
+    '\\.(css|scss)$': 'identity-obj-proxy',
   },
   transformIgnorePatterns: [
-    '<rootDir>/node_modules/(?!(lodash-es|@redhat-cloud-services|@openshift|@patternfly|uuid))',
+    '<rootDir>/node_modules/(?!(lodash-es|@redhat-cloud-services|@openshift|@patternfly|uuid|yaml))',
   ],
   transform: {
-    '^.+\\.(ts|js)x?$': ['ts-jest'],
+    '^.+\\.(ts|js)x?$': [
+      'ts-jest',
+      {
+        isolatedModules: true,
+      },
+    ],
     '\\.(jpg|jpeg|png|gif|svg)$': [
       '<rootDir>/fileTransformer.js',
     ],

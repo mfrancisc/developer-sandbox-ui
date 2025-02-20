@@ -335,7 +335,7 @@ spec:
             script: |
               #!/bin/bash
               set -ex
-              
+
               npm install
               npm test
     - name: build-container
