@@ -1,12 +1,11 @@
 import { AxiosInstance } from 'axios';
 
 function projectDeploymentUrl(namespace: string, labelSelector?: string) {
-  let labelSelectorURL = '';
-  if (labelSelector == '') {
-    labelSelectorURL = `?labelSelector=${labelSelector}`;
+  const url = new URL(`/apis/apps/v1/namespaces/${namespace}/deployments`);
+  if (labelSelector) {
+    url.searchParams.append('labelSelector', labelSelector);
   }
-
-  return `/apis/apps/v1/namespaces/${namespace}/deployments${labelSelectorURL}`;
+  return url;
 }
 
 export type DeploymentItem = {
@@ -58,17 +57,16 @@ export const getDeployments = async (
   labels?: string,
 ) => {
   const url = projectDeploymentUrl(namespace, labels);
-  const { data } = await axiosInstance.get<DeploymentData>(url);
+  const { data } = await axiosInstance.get<DeploymentData>(url.toString());
   return data;
 };
 
 function projectPersistentVolumeClaimUrl(namespace: string, labelSelector?: string) {
-  let labelSelectorURL = '';
-  if (labelSelector == '') {
-    labelSelectorURL = `?labelSelector=${labelSelector}`;
+  const url = new URL(`/api/v1/namespaces/${namespace}/persistentvolumeclaims`);
+  if (labelSelector) {
+    url.searchParams.append('labelSelector', labelSelector);
   }
-
-  return `/api/v1/namespaces/${namespace}/persistentvolumeclaims${labelSelectorURL}`;
+  return url;
 }
 
 export type PersistentVolumeClaimItem = {
@@ -92,17 +90,16 @@ export const getPersistentVolumeClaims = async (
   labels?: string,
 ) => {
   const url = projectPersistentVolumeClaimUrl(namespace, labels);
-  const { data } = await axiosInstance.get<PersistentVolumeClaimData>(url);
+  const { data } = await axiosInstance.get<PersistentVolumeClaimData>(url.toString());
   return data;
 };
 
 function projectStatefulSetUrl(namespace: string, labelSelector?: string) {
-  let labelSelectorURL = '';
-  if (labelSelector == '') {
-    labelSelectorURL = `?labelSelector=${labelSelector}`;
+  const url = new URL(`/apis/apps/v1/namespaces/${namespace}/statefulsets`);
+  if (labelSelector) {
+    url.searchParams.append('labelSelector', labelSelector);
   }
-
-  return `/apis/apps/v1/namespaces/${namespace}/statefulsets${labelSelectorURL}`;
+  return url;
 }
 
 export type StateFulSetItem = {
@@ -159,7 +156,7 @@ export const getStatefulSets = async (
   labels?: string,
 ) => {
   const url = projectStatefulSetUrl(namespace, labels);
-  const { data } = await axiosInstance.get<StatefulSetData>(url);
+  const { data } = await axiosInstance.get<StatefulSetData>(url.toString());
   return data;
 };
 

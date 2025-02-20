@@ -20,7 +20,7 @@ describe('ServiceCard', () => {
           event: 'DevSandbox Service Launch',
           properties: {
             name: `${o.title} ${o.subtitle}`,
-            url: o.launchUrl ? '' : '',
+            url: o.launchUrl ? o.launchUrl : '',
           },
         }}
       >

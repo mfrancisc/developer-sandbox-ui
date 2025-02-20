@@ -13,7 +13,11 @@ import {
 import { useFlag } from '@unleash/proxy-client-react';
 import { ANSIBLE_ID, OPENSHIFT_AI_ID, useSandboxServices } from '../../hooks/useSandboxServices';
 import ServiceCard, { ButtonsFuncOptions } from './ServiceCard';
-import AAPModal from '../AAPModal/AnsibleAutomationPlatformModal';
+import AAPModal, {
+  ANSIBLE_PROVISIONING_STATUS,
+  ANSIBLE_READY_STATUS,
+  ANSIBLE_UNKNOWN_STATUS,
+} from '../AAPModal/AnsibleAutomationPlatformModal';
 import useKubeApi from '../../hooks/useKubeApi';
 import { getReadyCondition } from '../../utils/conditions';
 import { SHORT_INTERVAL } from '../../utils/const';
@@ -28,6 +32,111 @@ import { DeploymentData, StatefulSetData } from '../../services/kube-api';
 
 type Props = {
   isDisabled?: boolean;
+};
+
+const AAPTrialButton = () => {
+  return (
+    <>
+      <TextContent>
+        <Text component={TextVariants.p}>
+          <b>
+            Note: Requires AAP trial
+            <span style={{ color: 'red' }}>*</span>
+          </b>
+        </Text>
+      </TextContent>
+      <br />
+      <AnalyticsButton
+        component="a"
+        href={'https://www.redhat.com/en/technologies/management/ansible/dev-sandbox/trial'}
+        className="pf-v5-u-mr-md"
+        rel="noopener"
+        analytics={{
+          event: 'DevSandbox AAP Start Trial',
+          properties: {
+            name: `DevSandbox AAP Start Trial`,
+            url: '',
+          },
+        }}
+      >
+        Get AAP Trial
+      </AnalyticsButton>
+    </>
+  );
+};
+
+const AAPCancelProvisioningButton = (props: { onClick: () => Promise<void> }) => {
+  return (
+    <>
+      <Button
+        className={'pf-v5-u-mr-xl'}
+        variant="control"
+        size="sm"
+        component="span"
+        isInline
+        onClick={props.onClick}
+        aria-label="Cancel"
+      >
+        Cancel
+      </Button>
+    </>
+  );
+};
+
+const AAPLaunchButton = (props: { onClick: () => void }) => {
+  return (
+    <>
+      <Button
+        className={'pf-v5-u-mr-xl'}
+        variant="primary"
+        size="sm"
+        component="span"
+        isInline
+        onClick={props.onClick}
+        aria-label="Launch"
+      >
+        Launch
+      </Button>
+    </>
+  );
+};
+
+const AAPProvisionButton = (props: {
+  disabled: boolean;
+  href: string | undefined;
+  onClick: (() => void) | undefined;
+  title: string;
+  subtitle: string;
+}) => {
+  return (
+    <>
+      <TextContent>
+        <Text component={TextVariants.p}>
+          <b>Note:</b> instance might take up to 30 minutes to provision.
+          <span style={{ color: 'red' }}>*</span>
+        </Text>
+      </TextContent>
+      <br />
+      <AnalyticsButton
+        component="a"
+        isDisabled={props.disabled}
+        href={props.href}
+        className="pf-v5-u-mr-md"
+        target="_blank"
+        rel="noopener"
+        onClick={props.onClick}
+        analytics={{
+          event: 'DevSandbox Service Launch',
+          properties: {
+            name: `${props.title} ${props.subtitle}`,
+            url: props.href ? '' : '',
+          },
+        }}
+      >
+        Provision
+      </AnalyticsButton>
+    </>
+  );
 };
 
 const ServiceCatalog = ({ isDisabled }: Props) => {
@@ -221,7 +330,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
           event: 'DevSandbox Service Launch',
           properties: {
             name: `${o.title} ${o.subtitle}`,
-            url: o.launchUrl ? '' : '',
+            url: o.launchUrl ? o.launchUrl : '',
           },
         }}
       >
@@ -234,99 +343,24 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     // the user has first to enable the trial subscription
     // before launching the AAP instance
     if (!AAPTrialEnabled) {
-      return (
-        <>
-          <TextContent>
-            <Text component={TextVariants.p}>
-              <b>
-                Note: Requires AAP trial
-                <span style={{ color: 'red' }}>*</span>
-              </b>
-            </Text>
-          </TextContent>
-          <br />
-          <AnalyticsButton
-            component="a"
-            href={'https://www.redhat.com/en/technologies/management/ansible/dev-sandbox/trial'}
-            className="pf-v5-u-mr-md"
-            rel="noopener"
-            analytics={{
-              event: 'DevSandbox AAP Start Trial',
-              properties: {
-                name: `DevSandbox AAP Start Trial`,
-                url: '',
-              },
-            }}
-          >
-            Get AAP Trial
-          </AnalyticsButton>
-        </>
-      );
+      return <AAPTrialButton />;
     }
 
     switch (o.status) {
-      case 'provisioning':
-      case 'unknown':
-        return (
-          <>
-            <Button
-              variant="control"
-              size="sm"
-              component="span"
-              isInline
-              onClick={deleteAAPInstance}
-              aria-label="Cancel"
-            >
-              Cancel
-            </Button>
-            &nbsp; &nbsp;
-          </>
-        );
-      case 'ready':
-        return (
-          <>
-            <Button
-              variant="primary"
-              size="sm"
-              component="span"
-              isInline
-              onClick={handleShowAAPModal}
-              aria-label="Launch"
-            >
-              Launch
-            </Button>
-            &nbsp; &nbsp;
-          </>
-        );
+      case ANSIBLE_PROVISIONING_STATUS:
+      case ANSIBLE_UNKNOWN_STATUS:
+        return <AAPCancelProvisioningButton onClick={deleteAAPInstance} />;
+      case ANSIBLE_READY_STATUS:
+        return <AAPLaunchButton onClick={handleShowAAPModal} />;
       default:
         return (
-          <>
-            <TextContent>
-              <Text component={TextVariants.p}>
-                <b>Note:</b> instance might take up to 30 minutes to provision.
-                <span style={{ color: 'red' }}>*</span>
-              </Text>
-            </TextContent>
-            <br />
-            <AnalyticsButton
-              component="a"
-              isDisabled={o.showDisabledButton}
-              href={o.launchUrl}
-              className="pf-v5-u-mr-md"
-              target="_blank"
-              rel="noopener"
-              onClick={o.onClickFunc}
-              analytics={{
-                event: 'DevSandbox Service Launch',
-                properties: {
-                  name: `${o.title} ${o.subtitle}`,
-                  url: o.launchUrl ? '' : '',
-                },
-              }}
-            >
-              Provision
-            </AnalyticsButton>
-          </>
+          <AAPProvisionButton
+            disabled={o.showDisabledButton}
+            href={o.launchUrl}
+            onClick={o.onClickFunc}
+            title={o.title}
+            subtitle={o.subtitle}
+          />
         );
     }
   };
@@ -389,8 +423,8 @@ function getAAPStatusTextComponent(status?: string): React.ReactElement {
         <>
           <TextContent>
             <Text component={TextVariants.p}>
-              <Spinner size="sm" aria-label="Contents of the small example" />
-              &nbsp; Provisioning...
+              <Spinner className={'pf-v5-u-mr-sm'} size="sm" aria-label="Provisioning" />
+              Provisioning...
             </Text>
           </TextContent>
           <br />
@@ -402,10 +436,10 @@ function getAAPStatusTextComponent(status?: string): React.ReactElement {
         <>
           <TextContent>
             <Text component={TextVariants.p}>
-              <Icon status="success">
+              <Icon className={'pf-v5-u-mr-sm'} status="success">
                 <CheckIcon />
               </Icon>
-              &nbsp; Ready
+              Ready
             </Text>
           </TextContent>
           <br />

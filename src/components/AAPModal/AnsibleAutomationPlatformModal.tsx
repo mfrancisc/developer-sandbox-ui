@@ -30,12 +30,145 @@ type Props = {
 
 const decode = (str: string): string => Buffer.from(str, 'base64').toString('binary');
 
+function AnsibleAutomationPlatformProvisioningModalContent(props: { onClose: () => void }) {
+  return (
+    <>
+      <TextContent>
+        <Text component={TextVariants.p} data-testid="modal-content">
+          Your AAP instance might take up to 30 minutes to provision. Once ready, your instance will
+          remain active for 12 hours.
+        </Text>
+        <br />
+        <Text component={TextVariants.p} data-testid="modal-content-docs">
+          While you wait, explore the
+          <a
+            className={'pf-v5-u-ml-sm'}
+            target="_blank"
+            rel="noreferrer"
+            href={'https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform'}
+          >
+            AAP documentation
+            <ExternalLinkAltIcon></ExternalLinkAltIcon>
+          </a>
+          .
+        </Text>
+      </TextContent>
+      <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
+        <Spinner size="xl" />
+      </Bullseye>
+      <Alert
+        variant="info"
+        isInline
+        title="You can close this window, and follow the status from the AAP card on the screen
+                                        in the background."
+      />
+      <br />
+      <Button
+        variant="link"
+        size="sm"
+        component="span"
+        isInline
+        onClick={props.onClose}
+        aria-label="Close"
+      >
+        Close
+      </Button>
+    </>
+  );
+}
+
+function AnsibleAutomationPlatformReadyModalContent(props: {
+  ansibleUIUser: string | undefined;
+  onCopy: () => void;
+  passwordHidden: boolean;
+  ansibleUIPassword: string;
+  onHidePasswordClick: () => void;
+  onOpenUIClick: () => void;
+}) {
+  return (
+    <>
+      <TextContent className={'pf-v5-u-mb-sm'}>
+        <Text component={TextVariants.p}>
+          Use the following credentials to log into the Ansible Portal.
+        </Text>
+      </TextContent>
+      <TextContent>
+        Username:
+        <ClipboardCopy
+          isReadOnly
+          className={'pf-v5-u-ml-xs'}
+          hoverTip="Copy"
+          clickTip="Copied"
+          variant="inline-compact"
+          isCode
+        >
+          {props.ansibleUIUser}
+        </ClipboardCopy>
+      </TextContent>
+      <TextContent className={'pf-v5-u-mb-sm'}>
+        Password:
+        <ClipboardCopy
+          isReadOnly
+          className={'pf-v5-u-ml-sm'}
+          hoverTip="Copy"
+          clickTip="Copied"
+          variant="inline-compact"
+          aria-label={'Copy password'}
+          isCode
+          onCopy={props.onCopy}
+        >
+          {props.passwordHidden
+            ? '*'.repeat(props.ansibleUIPassword.length)
+            : props.ansibleUIPassword}
+        </ClipboardCopy>
+        <Button
+          className={'pf-v5-u-ml-0 pf-v5-u-pl-sm'}
+          variant="plain"
+          onClick={props.onHidePasswordClick}
+          aria-label={props.passwordHidden ? 'Show password' : 'Hide password'}
+          icon={props.passwordHidden ? <EyeIcon /> : <EyeSlashIcon />}
+        ></Button>
+      </TextContent>
+      <TextContent>
+        <AnalyticsButton
+          onClick={props.onOpenUIClick}
+          className="pf-v5-u-w-100 pf-v5-u-w-initial-on-sm"
+          analytics={{
+            event: 'DevSandbox Ansible UI Start',
+          }}
+        >
+          Go to Ansible Automation Platform <ExternalLinkAltIcon></ExternalLinkAltIcon>
+        </AnalyticsButton>
+      </TextContent>
+      <br />
+      <TextContent>
+        <Text component={TextVariants.small}>
+          12 hours remaining until the instance will be automatically turned off.
+        </Text>
+      </TextContent>
+    </>
+  );
+}
+
+/**
+ * provisioning status indicates that the AAP instance is still provisioning/booting.
+ */
+export const ANSIBLE_PROVISIONING_STATUS = 'provisioning';
+/**
+ * the unknown status might indicate that the AAP instance is still provisioning/booting and, it doesn't have a status condition yet.
+ */
+export const ANSIBLE_UNKNOWN_STATUS = 'unknown';
+/**
+ * the ready status indicates that the AAP instance is ready to be used.
+ */
+export const ANSIBLE_READY_STATUS = 'ready';
+
 const AAPModal = ({ onClose, initialStatus }: Props) => {
   const [error, setError] = React.useState<string | undefined>();
   const { getSignupData } = useRegistrationService();
   const { getAAPData, getSecret } = useKubeApi();
   const [status, setStatus] = React.useState<string>(
-    initialStatus ? initialStatus : 'provisioning',
+    initialStatus ? initialStatus : ANSIBLE_PROVISIONING_STATUS,
   );
   const [ansibleUILink, setAnsibleUILink] = React.useState<string | undefined>();
   const [ansibleUIUser, setAnsibleUIUser] = React.useState<string>();
@@ -81,7 +214,11 @@ const AAPModal = ({ onClose, initialStatus }: Props) => {
   }, []);
 
   React.useEffect(() => {
-    if (status === 'provisioning' || status === 'unknown' || status == '') {
+    if (
+      status === ANSIBLE_PROVISIONING_STATUS ||
+      status === ANSIBLE_UNKNOWN_STATUS ||
+      status == ''
+    ) {
       const handle = setInterval(getAAPDataFn, SHORT_INTERVAL);
       return () => {
         clearInterval(handle);
@@ -97,7 +234,7 @@ const AAPModal = ({ onClose, initialStatus }: Props) => {
       header={
         // custom title to prevent ellipsis overflow on small screens
         <Title id="aap-modal-title" headingLevel="h1">
-          {status === 'ready'
+          {status === ANSIBLE_READY_STATUS
             ? 'Ansible Automation Platform instance provisioned'
             : 'Provisioning Ansible Automation Platform (AAP) instance'}
         </Title>
@@ -118,118 +255,24 @@ const AAPModal = ({ onClose, initialStatus }: Props) => {
       ) : null}
       {(() => {
         switch (status) {
-          case 'provisioning':
-          case 'unknown':
-            return (
-              <>
-                <TextContent>
-                  <Text component={TextVariants.p} data-testid="modal-content">
-                    Your AAP instance might take up to 30 minutes to provision. Once ready, your
-                    instance will remain active for 12 hours.
-                  </Text>
-                  <br />
-                  <Text component={TextVariants.p} data-testid="modal-content-docs">
-                    While you wait, explore the &nbsp;
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      href={
-                        'https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform'
-                      }
-                    >
-                      AAP documentation
-                      <ExternalLinkAltIcon></ExternalLinkAltIcon>
-                    </a>
-                    .
-                  </Text>
-                </TextContent>
-                <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
-                  <Spinner size="xl" />
-                </Bullseye>
-                <Alert
-                  variant="info"
-                  isInline
-                  title="You can close this window, and follow the status from the AAP card on the screen
-                                        in the background."
-                />
-                <br />
-                <Button
-                  variant="link"
-                  size="sm"
-                  component="span"
-                  isInline
-                  onClick={() => onClose()}
-                  aria-label="Close"
-                >
-                  Close
-                </Button>
-              </>
-            );
+          case ANSIBLE_PROVISIONING_STATUS:
+          case ANSIBLE_UNKNOWN_STATUS:
+            return <AnsibleAutomationPlatformProvisioningModalContent onClose={onClose} />;
 
-          case 'ready':
+          case ANSIBLE_READY_STATUS:
             return (
-              <>
-                <TextContent>
-                  <Text component={TextVariants.p}>
-                    Use the following credentials to log into the Ansible Portal.
-                  </Text>
-                </TextContent>
-                &nbsp;
-                <TextContent>
-                  Username: &nbsp;
-                  <ClipboardCopy
-                    isReadOnly
-                    hoverTip="Copy"
-                    clickTip="Copied"
-                    variant="inline-compact"
-                    isCode
-                  >
-                    {ansibleUIUser}
-                  </ClipboardCopy>
-                </TextContent>
-                <TextContent>
-                  Password: &nbsp;
-                  <ClipboardCopy
-                    isReadOnly
-                    hoverTip="Copy"
-                    clickTip="Copied"
-                    variant="inline-compact"
-                    aria-label={'Copy password'}
-                    isCode
-                    onCopy={() => {
-                      navigator.clipboard.writeText(ansibleUIPassword);
-                    }}
-                  >
-                    {passwordHidden ? '*'.repeat(ansibleUIPassword.length) : ansibleUIPassword}
-                  </ClipboardCopy>
-                  <Button
-                    variant="plain"
-                    onClick={() => setPasswordHidden(!passwordHidden)}
-                    aria-label={passwordHidden ? 'Show password' : 'Hide password'}
-                    icon={passwordHidden ? <EyeIcon /> : <EyeSlashIcon />}
-                  ></Button>
-                  &nbsp;
-                </TextContent>
-                <TextContent>
-                  <AnalyticsButton
-                    onClick={() => {
-                      window.open(ansibleUILink, '_blank');
-                    }}
-                    className="pf-v5-u-w-100 pf-v5-u-w-initial-on-sm"
-                    analytics={{
-                      event: 'DevSandbox Ansible UI Start',
-                    }}
-                  >
-                    Go to Ansible Automation Platform <ExternalLinkAltIcon></ExternalLinkAltIcon>
-                  </AnalyticsButton>
-                </TextContent>
-                <br />
-                <TextContent>
-                  <Text component={TextVariants.small}>
-                    12 hours remaining until the instance will be automatically turned off.
-                  </Text>
-                </TextContent>
-              </>
+              <AnsibleAutomationPlatformReadyModalContent
+                onCopy={() => {
+                  navigator.clipboard.writeText(ansibleUIPassword);
+                }}
+                passwordHidden={passwordHidden}
+                ansibleUIUser={ansibleUIUser}
+                ansibleUIPassword={ansibleUIPassword}
+                onHidePasswordClick={() => setPasswordHidden(!passwordHidden)}
+                onOpenUIClick={() => {
+                  window.open(ansibleUILink, '_blank');
+                }}
+              />
             );
           default:
             return null;
