@@ -83,7 +83,7 @@ function AnsibleAutomationPlatformProvisioningModalContent(props: {
       />
       <br />
       <Button
-        variant="link"
+        variant="primary"
         size="sm"
         component="span"
         isInline
@@ -218,7 +218,7 @@ function AnsibleAutomationPlatformReadyModalContent(props: {
       </TextContent>
       <br />
       <Button
-        variant="secondary"
+        variant="primary"
         size="sm"
         component="span"
         isInline
