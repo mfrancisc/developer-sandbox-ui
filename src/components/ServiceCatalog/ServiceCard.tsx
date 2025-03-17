@@ -21,7 +21,8 @@ type Props = {
   buttonOptions: ButtonsFuncOptions;
   buttonsFunc: (o: ButtonsFuncOptions) => React.ReactElement;
   status?: string;
-  helperText?: (status?: string) => React.ReactElement;
+  helperText?: (status: string, provisioningLabel: string) => React.ReactElement;
+  provisioningLabel?: string;
 };
 
 export type ButtonsFuncOptions = {
@@ -43,6 +44,7 @@ const ServiceCard = ({
   buttonsFunc,
   status,
   helperText,
+  provisioningLabel,
 }: Props) => {
   return (
     <Card className="pf-v5-u-h-100">
@@ -55,7 +57,7 @@ const ServiceCard = ({
       </CardHeader>
       <CardBody>{description}</CardBody>
       <CardFooter>
-        {helperText != undefined ? helperText(status) : ''}
+        {helperText != undefined ? helperText(status || '', provisioningLabel || '') : ''}
         {buttonsFunc(buttonOptions)}
         <AnalyticsButton
           variant={ButtonVariant.link}

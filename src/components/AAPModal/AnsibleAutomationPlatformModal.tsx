@@ -30,24 +30,34 @@ import { SHORT_INTERVAL } from '../../utils/const';
 import useKubeApi from '../../hooks/useKubeApi';
 import useRegistrationService from '../../hooks/useRegistrationService';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
-import { getReadyCondition } from '../../utils/conditions';
+import {
+  ANSIBLE_PROVISIONING_STATUS,
+  ANSIBLE_READY_STATUS,
+  ANSIBLE_UNKNOWN_STATUS,
+  getReadyCondition,
+} from '../../utils/conditions';
 
 import './CustomList.scss';
+import { capitalize } from 'lodash-es';
 
 type Props = {
+  provisioningLabel?: string;
   initialStatus?: string;
   onClose: (aapData?: AAPData) => void;
 };
 
 const decode = (str: string): string => Buffer.from(str, 'base64').toString('binary');
 
-function AnsibleAutomationPlatformProvisioningModalContent(props: { onClose: () => void }) {
+function AnsibleAutomationPlatformProvisioningModalContent(props: {
+  onClose: () => void;
+  provisioningLabel: string;
+}) {
   return (
     <>
       <TextContent>
         <Text component={TextVariants.p} data-testid="modal-content">
-          Provisioning can take up to 30 minutes. When ready, your instance will remain active for
-          11 hours.
+          {capitalize(props.provisioningLabel)} can take up to 30 minutes. When ready, your instance
+          will remain active for several hours.
         </Text>
         <br />
         <Text component={TextVariants.p} data-testid="modal-content-docs">
@@ -178,10 +188,11 @@ function AnsibleAutomationPlatformReadyModalContent(props: {
             <div className="instructions__list-item-contents">
               <TextContent className={'pf-v5-u-mb-xl'}>
                 <Text component={TextVariants.p}>
-                  <b>Activate your instance </b>
+                  <b>Activate your subscription </b>
                 </Text>
                 <Text component={TextVariants.p}>
-                  Activate your AAP instance using your Red Hat Hybrid Cloud Console credentials.
+                  Activate your AAP subscription using your Red Hat Hybrid Cloud Console username
+                  and password.
                 </Text>
               </TextContent>
             </div>
@@ -193,7 +204,7 @@ function AnsibleAutomationPlatformReadyModalContent(props: {
                 <Text component={TextVariants.p}>
                   <b>Enjoy your AAP sandbox!</b>
                 </Text>
-                <Text component={TextVariants.p}>Instance will time out after 11 hours.</Text>
+                <Text component={TextVariants.p}>Instance will time out after several hours.</Text>
               </TextContent>
             </div>
           </TextListItem>
@@ -220,20 +231,7 @@ function AnsibleAutomationPlatformReadyModalContent(props: {
   );
 }
 
-/**
- * provisioning status indicates that the AAP instance is still provisioning/booting.
- */
-export const ANSIBLE_PROVISIONING_STATUS = 'provisioning';
-/**
- * the unknown status might indicate that the AAP instance is still provisioning/booting and, it doesn't have a status condition yet.
- */
-export const ANSIBLE_UNKNOWN_STATUS = 'unknown';
-/**
- * the ready status indicates that the AAP instance is ready to be used.
- */
-export const ANSIBLE_READY_STATUS = 'ready';
-
-const AAPModal = ({ onClose, initialStatus }: Props) => {
+const AAPModal = ({ onClose, initialStatus, provisioningLabel }: Props) => {
   const [error, setError] = React.useState<string | undefined>();
   const { getSignupData } = useRegistrationService();
   const { getAAPData, getSecret } = useKubeApi();
@@ -258,7 +256,10 @@ const AAPModal = ({ onClose, initialStatus }: Props) => {
       const data = await getAAPData(signupData.defaultUserNamespace);
       const status = getReadyCondition(data, handleSetAAPCRError);
       setStatus(status);
-      if (data != undefined && data.items.length > 0 && data.items[0].status != undefined) {
+      if (data == undefined || data.items.length <= 0) {
+        return;
+      }
+      if (data.items[0].status != undefined) {
         // set UI link if available
         if (data.items[0].status.URL) {
           setAnsibleUILink(data.items[0].status.URL);
@@ -312,7 +313,7 @@ const AAPModal = ({ onClose, initialStatus }: Props) => {
               Ansible Automation Platform instance provisioned
             </>
           ) : (
-            'Provisioning Ansible Automation Platform (AAP) instance'
+            `${capitalize(provisioningLabel)} Ansible Automation Platform (AAP) instance`
           )}
         </Title>
       }
@@ -334,7 +335,12 @@ const AAPModal = ({ onClose, initialStatus }: Props) => {
         switch (status) {
           case ANSIBLE_PROVISIONING_STATUS:
           case ANSIBLE_UNKNOWN_STATUS:
-            return <AnsibleAutomationPlatformProvisioningModalContent onClose={onClose} />;
+            return (
+              <AnsibleAutomationPlatformProvisioningModalContent
+                onClose={onClose}
+                provisioningLabel={provisioningLabel || 'Provisioning'}
+              />
+            );
 
           case ANSIBLE_READY_STATUS:
             return (

@@ -77,15 +77,17 @@ describe('AnsibleAutomationPlatformModal', () => {
     getSignupDataMock = signupService.getSignupData as jest.Mock;
   });
 
-  function requiredModalTextWhenProvisioning() {
+  function requiredModalTextWhenProvisioning(provisioningLabel: string) {
     // title should be there
-    const modalTitle = screen.getByText('Provisioning Ansible Automation Platform (AAP) instance');
+    const modalTitle = screen.getByText(
+      `${provisioningLabel} Ansible Automation Platform (AAP) instance`,
+    );
     expect(modalTitle).toBeDefined();
     // modal content should be there
     const { getByText } = within(screen.getByTestId('modal-content'));
     expect(
       getByText(
-        'Provisioning can take up to 30 minutes. When ready, your instance will remain active for 11 hours.',
+        `${provisioningLabel} can take up to 30 minutes. When ready, your instance will remain active for several hours.`,
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'AAP documentation' })).toHaveAttribute(
@@ -102,13 +104,36 @@ describe('AnsibleAutomationPlatformModal', () => {
   }
 
   it('modal should say that provisioning is in progress when initialStatus is unknown', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
-    requiredModalTextWhenProvisioning();
+    render(
+      <AnsibleAutomationPlatformModal
+        onClose={mockCallBack}
+        initialStatus="unknown"
+        provisioningLabel={'provisioning'}
+      />,
+    );
+    requiredModalTextWhenProvisioning('Provisioning');
   });
 
   it('modal should say that provisioning is in progress when initialStatus in provisioning', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="provisioning" />);
-    requiredModalTextWhenProvisioning();
+    render(
+      <AnsibleAutomationPlatformModal
+        onClose={mockCallBack}
+        initialStatus="provisioning"
+        provisioningLabel={'provisioning'}
+      />,
+    );
+    requiredModalTextWhenProvisioning('Provisioning');
+  });
+
+  it('modal should say that reprovisioning un-idling existing instance', () => {
+    render(
+      <AnsibleAutomationPlatformModal
+        onClose={mockCallBack}
+        initialStatus="provisioning"
+        provisioningLabel={'reprovisioning'}
+      />,
+    );
+    requiredModalTextWhenProvisioning('Reprovisioning');
   });
 
   it('should render when AAP is ready', async () => {
@@ -127,10 +152,16 @@ describe('AnsibleAutomationPlatformModal', () => {
     });
     getAAPDataMock.mockReturnValue(mockedAAPCR);
     act(() => {
-      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
+      render(
+        <AnsibleAutomationPlatformModal
+          onClose={mockCallBack}
+          initialStatus="unknown"
+          provisioningLabel={'provisioning'}
+        />,
+      );
     });
     // Modal is still in provisioning mode
-    requiredModalTextWhenProvisioning();
+    requiredModalTextWhenProvisioning('Provisioning');
     // once we retrieve the AAP CR with the ready status,
     // the open UI button and credentials should be rendered
     jest.advanceTimersByTime(2000);

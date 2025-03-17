@@ -1,5 +1,22 @@
 import { AAPData, StatusCondition } from '../services/kube-api';
 
+/**
+ * provisioning status indicates that the AAP instance is still provisioning/booting.
+ */
+export const ANSIBLE_PROVISIONING_STATUS = 'provisioning';
+/**
+ * the unknown status might indicate that the AAP instance is still provisioning/booting and, it doesn't have a status condition yet.
+ */
+export const ANSIBLE_UNKNOWN_STATUS = 'unknown';
+/**
+ * the ready status indicates that the AAP instance is ready to be used.
+ */
+export const ANSIBLE_READY_STATUS = 'ready';
+/**
+ * the ready status indicates that the AAP instance is ready to be used.
+ */
+export const ANSIBLE_IDLED = 'idled';
+
 export const getReadyCondition = (
   data: AAPData | undefined,
   setError: (errorDetails: string) => void,
@@ -17,12 +34,12 @@ export const getReadyCondition = (
   }
 
   if (data.items[0].status == undefined || data.items[0].status.conditions.length == 0) {
-    return 'unknown';
+    return ANSIBLE_UNKNOWN_STATUS;
   }
 
   // check if instance is idled
   if (data.items[0].spec != undefined && data.items[0].spec.idle_aap) {
-    return 'idled';
+    return ANSIBLE_IDLED;
   }
 
   // we can assume that there will be only one aap instance
@@ -31,7 +48,7 @@ export const getReadyCondition = (
   // if the Successful condition is set to true it means the instance is ready
   const [isSuccessful, conditionSuccessful] = isConditionTrue('Successful', conditions);
   if (isSuccessful && conditionSuccessful?.reason == 'Successful') {
-    return 'ready';
+    return ANSIBLE_READY_STATUS;
   }
 
   // If the Failure condition is set to True, then we need to return the error
@@ -40,17 +57,17 @@ export const getReadyCondition = (
     if (condition) {
       setError(condition.message);
     }
-    return 'unknown';
+    return ANSIBLE_UNKNOWN_STATUS;
   }
 
   // If the Running condition is set to true it means that the instance it's still provisioning
   const [isStillRunning] = isConditionTrue('Running', conditions);
   if (isStillRunning) {
-    return 'provisioning';
+    return ANSIBLE_PROVISIONING_STATUS;
   }
 
   // unable to find the ready condition
-  return 'unknown';
+  return ANSIBLE_UNKNOWN_STATUS;
 };
 
 // isConditionTrue checks if a given condition type exists and it's status is set to True
