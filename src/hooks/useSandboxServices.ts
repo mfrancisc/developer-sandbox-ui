@@ -45,7 +45,7 @@ export const useSandboxServices = (handleShowAAPModal: () => void): Service[] =>
       // we need to un-idle the instance
       await axiosInstance
         .patch(
-          `/apis/aap.ansible.com/v1alpha1/namespaces/${signupData.defaultUserNamespace}/ansibleautomationplatforms/${data.items[0].metadata.name}`,
+          `/apis/aap.ansible.com/v1alpha1/namespaces/${signupData.defaultUserNamespace}/ansibleautomationplatforms/sandbox-aap`,
           JSON.parse('{"spec":{"idle_aap":false}}'),
           {
             headers: { 'Content-type': 'application/merge-patch+json' },

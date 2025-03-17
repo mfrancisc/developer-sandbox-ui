@@ -218,7 +218,7 @@ function AnsibleAutomationPlatformReadyModalContent(props: {
       </TextContent>
       <br />
       <Button
-        variant="link"
+        variant="secondary"
         size="sm"
         component="span"
         isInline

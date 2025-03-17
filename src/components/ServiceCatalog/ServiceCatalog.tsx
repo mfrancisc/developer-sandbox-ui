@@ -25,7 +25,7 @@ import {
 } from '../../utils/conditions';
 import { SHORT_INTERVAL } from '../../utils/const';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
-import { CheckIcon, WarningTriangleIcon } from '@patternfly/react-icons';
+import { CheckIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { AxiosError } from 'axios';
 import { errorMessage } from '../../utils/utils';
@@ -79,7 +79,7 @@ const AAPDeleteModal = (props: { onClick: () => Promise<void>; onClose: () => vo
       header={
         // custom title to prevent ellipsis overflow on small screens
         <Title id="aap-delete-modal-title" headingLevel="h1">
-          <WarningTriangleIcon color={'orange'} className={'pf-v5-u-mr-md'} />
+          <ExclamationTriangleIcon color={'orange'} className={'pf-v5-u-mr-md'} />
           Delete instance?
         </Title>
       }
@@ -120,7 +120,7 @@ const AAPDeleteButton = (props: { onClick: () => void; onClose: () => void }) =>
   return (
     <Button
       className={'pf-v5-u-mr-lg'}
-      variant="control"
+      variant="tertiary"
       size="sm"
       component="span"
       isInline
@@ -160,7 +160,7 @@ const AAPProvisionButton = (props: {
     <>
       <TextContent>
         <Text component={TextVariants.p}>
-          <b>Note:</b> instance might take up to 30 minutes to {props.statusText}.
+          <b>Note:</b> Instance might take up to 30 minutes to {props.statusText}.
           <span style={{ color: 'red' }}>*</span>
         </Text>
       </TextContent>
@@ -491,12 +491,23 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
   );
 };
 
+const DeletionNote = () => {
+  return (
+    <TextContent className={'pf-v5-u-mb-md'}>
+      <Text component={TextVariants.p}>
+        <b>Note:</b> Deleting your AAP instance will result in any work being lost.
+      </Text>
+    </TextContent>
+  );
+};
+
 function getAAPStatusTextComponent(status: string, provisioningLabel: string): React.ReactElement {
   switch (status) {
     case ANSIBLE_PROVISIONING_STATUS:
     case ANSIBLE_UNKNOWN_STATUS:
       return (
         <>
+          <DeletionNote />
           <TextContent>
             <Text component={TextVariants.p}>
               <Spinner className={'pf-v5-u-mr-sm'} size="sm" aria-label="Provisioning" />
@@ -510,6 +521,7 @@ function getAAPStatusTextComponent(status: string, provisioningLabel: string): R
     case ANSIBLE_READY_STATUS:
       return (
         <>
+          <DeletionNote />
           <TextContent>
             <Text component={TextVariants.p}>
               <Icon className={'pf-v5-u-mr-sm'} status="success">
