@@ -121,7 +121,7 @@ function AnsibleAutomationPlatformReadyModalContent(props: {
             <div className="instructions__list-item-contents">
               <TextContent>
                 <Text component={TextVariants.p}>
-                  <b>Log in to your AAP trial instance</b>
+                  <b>Log in to your AAP trial account</b>
                 </Text>
                 <AnalyticsButton
                   onClick={props.onOpenUIClick}
