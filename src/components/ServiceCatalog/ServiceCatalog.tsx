@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {
+  Bullseye,
   Button,
   Gallery,
   GalleryItem,
@@ -25,7 +26,7 @@ import {
 } from '../../utils/conditions';
 import { SHORT_INTERVAL } from '../../utils/const';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
-import { CheckIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { CheckIcon, ExclamationTriangleIcon, EyeIcon, EyeSlashIcon } from '@patternfly/react-icons';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { AxiosError } from 'axios';
 import { errorMessage } from '../../utils/utils';
@@ -70,7 +71,7 @@ const AAPTrialButton = () => {
   );
 };
 
-const AAPDeleteModal = (props: { onClick: () => Promise<void>; onClose: () => void }) => {
+const AAPDeleteModal = (props: { onClick: () => Promise<void>; onClose: () => void; isLoading: boolean }) => {
   return (
     <Modal
       data-testid="aap-delete-modal"
@@ -86,6 +87,11 @@ const AAPDeleteModal = (props: { onClick: () => Promise<void>; onClose: () => vo
       isOpen
       onClose={props.onClose}
     >
+        { props.isLoading ?
+            <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
+              <Spinner size="xl" />
+            </Bullseye> : ""
+        }
       <TextContent className={'pf-v5-u-mb-xl'}>
         <Text component={TextVariants.p} data-testid="modal-content">
           Your AAP instance will be deleted. Consider backing up your work before continuing.
@@ -214,6 +220,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     api.setError(errorDetails);
   };
   const [provisioningLabel, setProvisioningLabel] = React.useState<string>('provisioning');
+  const [loading, setLoading] = React.useState(false);
 
   async function deleteSecretsAndPVCs(
     k8sObjects: StatefulSetData | DeploymentData | void,
@@ -309,6 +316,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     }
     api.setError(undefined);
 
+    setLoading(true)
     // TODO: this might be removed in the future,
     // Let's get the deployments before deleting the AAP CR
     // and the statefulsets, so that we can retrieve the names of secrets and pvcs used by those.
@@ -344,6 +352,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     await deleteSecretsAndPVCs(aapStatefulSets, signupData.defaultUserNamespace);
     await deletePVCsForSTS(aapStatefulSets, signupData.defaultUserNamespace);
     handleCloseDeleteModal();
+    setLoading(false)
   };
 
   const getAAPDataFn = React.useCallback(async () => {
@@ -441,7 +450,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
         />
       ) : null}
       {showDeleteModal ? (
-        <AAPDeleteModal onClose={handleCloseDeleteModal} onClick={deleteAAPInstance} />
+        <AAPDeleteModal onClose={handleCloseDeleteModal} onClick={deleteAAPInstance} isLoading={loading}/>
       ) : null}
       <Gallery hasGutter minWidths={{ default: '400px' }}>
         {services.map((service) => {
