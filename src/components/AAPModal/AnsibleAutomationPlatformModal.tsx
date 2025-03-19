@@ -256,7 +256,7 @@ const AAPModal = ({ onClose, initialStatus, provisioningLabel }: Props) => {
       const data = await getAAPData(signupData.defaultUserNamespace);
       const status = getReadyCondition(data, handleSetAAPCRError);
       setStatus(status);
-      if (data == undefined || data.items.length <= 0) {
+      if (data == undefined || data.items == undefined || data.items.length <= 0) {
         return;
       }
       if (data.items[0].status != undefined) {

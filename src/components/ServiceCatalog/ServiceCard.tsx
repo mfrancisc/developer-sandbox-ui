@@ -42,9 +42,9 @@ const ServiceCard = ({
   learnMoreUrl,
   buttonOptions,
   buttonsFunc,
-  status,
+  status = '',
   helperText,
-  provisioningLabel,
+  provisioningLabel = '',
 }: Props) => {
   return (
     <Card className="pf-v5-u-h-100">
@@ -57,7 +57,7 @@ const ServiceCard = ({
       </CardHeader>
       <CardBody>{description}</CardBody>
       <CardFooter>
-        {helperText != undefined ? helperText(status || '', provisioningLabel || '') : ''}
+        {helperText != undefined ? helperText(status, provisioningLabel) : ''}
         {buttonsFunc(buttonOptions)}
         <AnalyticsButton
           variant={ButtonVariant.link}

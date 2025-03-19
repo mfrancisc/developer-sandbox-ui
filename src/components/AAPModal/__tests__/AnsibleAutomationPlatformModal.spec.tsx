@@ -6,6 +6,12 @@ import useRegistrationService from '../../../hooks/useRegistrationService';
 import { Buffer } from 'buffer';
 
 import yamlParse from 'yaml';
+import { ANSIBLE_PROVISIONING_STATUS, ANSIBLE_UNKNOWN_STATUS } from '../../../utils/conditions';
+import {
+  ANSIBLE_PROVISIONING_LABEL,
+  ANSIBLE_REPROVISIONING_LABEL,
+} from '../../ServiceCatalog/ServiceCatalog';
+import { capitalize } from 'lodash-es';
 
 const mockedAAPCR = yamlParse.parse(`
 apiVersion: v1
@@ -107,33 +113,33 @@ describe('AnsibleAutomationPlatformModal', () => {
     render(
       <AnsibleAutomationPlatformModal
         onClose={mockCallBack}
-        initialStatus="unknown"
-        provisioningLabel={'provisioning'}
+        initialStatus={ANSIBLE_UNKNOWN_STATUS}
+        provisioningLabel={ANSIBLE_PROVISIONING_LABEL}
       />,
     );
-    requiredModalTextWhenProvisioning('Provisioning');
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_PROVISIONING_LABEL));
   });
 
   it('modal should say that provisioning is in progress when initialStatus in provisioning', () => {
     render(
       <AnsibleAutomationPlatformModal
         onClose={mockCallBack}
-        initialStatus="provisioning"
-        provisioningLabel={'provisioning'}
+        initialStatus={ANSIBLE_PROVISIONING_STATUS}
+        provisioningLabel={ANSIBLE_PROVISIONING_LABEL}
       />,
     );
-    requiredModalTextWhenProvisioning('Provisioning');
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_PROVISIONING_LABEL));
   });
 
   it('modal should say that reprovisioning un-idling existing instance', () => {
     render(
       <AnsibleAutomationPlatformModal
         onClose={mockCallBack}
-        initialStatus="provisioning"
-        provisioningLabel={'reprovisioning'}
+        initialStatus={ANSIBLE_PROVISIONING_STATUS}
+        provisioningLabel={ANSIBLE_REPROVISIONING_LABEL}
       />,
     );
-    requiredModalTextWhenProvisioning('Reprovisioning');
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_REPROVISIONING_LABEL));
   });
 
   it('should render when AAP is ready', async () => {
@@ -155,13 +161,13 @@ describe('AnsibleAutomationPlatformModal', () => {
       render(
         <AnsibleAutomationPlatformModal
           onClose={mockCallBack}
-          initialStatus="unknown"
-          provisioningLabel={'provisioning'}
+          initialStatus={ANSIBLE_UNKNOWN_STATUS}
+          provisioningLabel={ANSIBLE_PROVISIONING_LABEL}
         />,
       );
     });
     // Modal is still in provisioning mode
-    requiredModalTextWhenProvisioning('Provisioning');
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_PROVISIONING_LABEL));
     // once we retrieve the AAP CR with the ready status,
     // the open UI button and credentials should be rendered
     jest.advanceTimersByTime(2000);

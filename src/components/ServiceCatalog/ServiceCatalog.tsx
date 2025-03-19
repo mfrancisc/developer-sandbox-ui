@@ -37,6 +37,9 @@ import AAPModal from '../AAPModal/AnsibleAutomationPlatformModal';
 import { capitalize } from 'lodash-es';
 import { Modal } from '@patternfly/react-core/dist/dynamic/components/Modal';
 
+export const ANSIBLE_PROVISIONING_LABEL = 'provisioning';
+export const ANSIBLE_REPROVISIONING_LABEL = 'reprovisioning';
+
 type Props = {
   isDisabled?: boolean;
 };
@@ -225,7 +228,9 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
   const handleSetAAPCRError = (errorDetails: string) => {
     api.setError(errorDetails);
   };
-  const [provisioningLabel, setProvisioningLabel] = React.useState<string>('provisioning');
+  const [provisioningLabel, setProvisioningLabel] = React.useState<string>(
+    ANSIBLE_PROVISIONING_LABEL,
+  );
   const [loading, setLoading] = React.useState(false);
 
   async function deleteSecretsAndPVCs(
@@ -377,7 +382,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
       const status = getReadyCondition(data, handleSetAAPCRError);
       setAAPStatus(status);
       if (status === ANSIBLE_IDLED) {
-        setProvisioningLabel('reprovisioning');
+        setProvisioningLabel(ANSIBLE_REPROVISIONING_LABEL);
       }
     } catch (e) {
       api.setError(errorMessage(e));
@@ -440,7 +445,9 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
             onClick={o.onClickFunc}
             title={o.title}
             subtitle={o.subtitle}
-            statusText={provisioningLabel === 'reprovisioning' ? 'reprovision' : 'provision'}
+            statusText={
+              provisioningLabel === ANSIBLE_REPROVISIONING_LABEL ? 'reprovision' : 'provision'
+            }
           />
         );
     }
@@ -451,7 +458,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
       {showAAPModal ? (
         <AAPModal
           initialStatus={''}
-          provisioningLabel={provisioningLabel || 'provisioining'}
+          provisioningLabel={provisioningLabel || ANSIBLE_PROVISIONING_LABEL}
           onClose={handleCloseAAPModal}
         />
       ) : null}
