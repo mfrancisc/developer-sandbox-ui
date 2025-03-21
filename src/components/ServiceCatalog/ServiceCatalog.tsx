@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { Gallery, GalleryItem } from '@patternfly/react-core';
 import {
+  Bullseye,
   Button,
+  Gallery,
+  GalleryItem,
   HelperText,
   HelperTextItem,
   Icon,
@@ -9,26 +11,34 @@ import {
   Text,
   TextContent,
   TextVariants,
+  Title,
 } from '@patternfly/react-core';
 import { useFlag } from '@unleash/proxy-client-react';
 import { ANSIBLE_ID, OPENSHIFT_AI_ID, useSandboxServices } from '../../hooks/useSandboxServices';
 import ServiceCard, { ButtonsFuncOptions } from './ServiceCard';
-import AAPModal, {
+import useKubeApi from '../../hooks/useKubeApi';
+import {
+  ANSIBLE_IDLED,
   ANSIBLE_PROVISIONING_STATUS,
   ANSIBLE_READY_STATUS,
   ANSIBLE_UNKNOWN_STATUS,
-} from '../AAPModal/AnsibleAutomationPlatformModal';
-import useKubeApi from '../../hooks/useKubeApi';
-import { getReadyCondition } from '../../utils/conditions';
+  getReadyCondition,
+} from '../../utils/conditions';
 import { SHORT_INTERVAL } from '../../utils/const';
 import AnalyticsButton from '../AnalyticsButton/AnalyticsButton';
-import { CheckIcon } from '@patternfly/react-icons';
+import { CheckIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { AxiosError } from 'axios';
 import { errorMessage } from '../../utils/utils';
 import { useRegistrationContext } from '../../hooks/useRegistrationContext';
 import useAxios, { InstanceAPI } from '../../hooks/useAxios';
 import { DeploymentData, StatefulSetData } from '../../services/kube-api';
+import AAPModal from '../AAPModal/AnsibleAutomationPlatformModal';
+import { capitalize } from 'lodash-es';
+import { Modal } from '@patternfly/react-core/dist/dynamic/components/Modal';
+
+export const ANSIBLE_PROVISIONING_LABEL = 'provisioning';
+export const ANSIBLE_REPROVISIONING_LABEL = 'reprovisioning';
 
 type Props = {
   isDisabled?: boolean;
@@ -39,10 +49,9 @@ const AAPTrialButton = () => {
     <>
       <TextContent>
         <Text component={TextVariants.p}>
-          <b>
-            Note: Requires AAP trial
-            <span style={{ color: 'red' }}>*</span>
-          </b>
+          <b>Note:</b>
+          Requires AAP trial
+          <span style={{ color: 'red' }}>*</span>
         </Text>
       </TextContent>
       <br />
@@ -59,27 +68,82 @@ const AAPTrialButton = () => {
           },
         }}
       >
-        Get AAP Trial
+        Try AAP
       </AnalyticsButton>
     </>
   );
 };
 
-const AAPCancelProvisioningButton = (props: { onClick: () => Promise<void> }) => {
+const AAPDeleteModal = (props: {
+  onClick: () => Promise<void>;
+  onClose: () => void;
+  isLoading: boolean;
+}) => {
   return (
-    <>
+    <Modal
+      data-testid="aap-delete-modal"
+      variant={'small'}
+      aria-labelledby="aap-delete-modal-title"
+      header={
+        // custom title to prevent ellipsis overflow on small screens
+        <Title id="aap-delete-modal-title" headingLevel="h1">
+          <ExclamationTriangleIcon color={'orange'} className={'pf-v5-u-mr-md'} />
+          Delete instance?
+        </Title>
+      }
+      isOpen
+      onClose={props.onClose}
+    >
+      {props.isLoading ? (
+        <Bullseye className="pf-v5-u-mt-2xl pf-v5-u-mb-lg">
+          <Spinner size="xl" />
+        </Bullseye>
+      ) : (
+        ''
+      )}
+      <TextContent className={'pf-v5-u-mb-xl'}>
+        <Text component={TextVariants.p} data-testid="modal-content">
+          Your AAP instance will be deleted. Consider backing up your work before continuing.
+        </Text>
+      </TextContent>
       <Button
-        className={'pf-v5-u-mr-xl'}
-        variant="control"
+        className={'pf-v5-u-mr-lg'}
+        variant="danger"
         size="sm"
         component="span"
         isInline
         onClick={props.onClick}
+        aria-label="Delete instance"
+      >
+        Delete instance
+      </Button>
+      <Button
+        variant="link"
+        size="sm"
+        component="span"
+        isInline
+        onClick={props.onClose}
         aria-label="Cancel"
       >
         Cancel
       </Button>
-    </>
+    </Modal>
+  );
+};
+
+const AAPDeleteButton = (props: { onClick: () => void; onClose: () => void }) => {
+  return (
+    <Button
+      className={'pf-v5-u-mr-lg'}
+      variant="tertiary"
+      size="sm"
+      component="span"
+      isInline
+      onClick={props.onClick}
+      aria-label="Delete"
+    >
+      Delete
+    </Button>
   );
 };
 
@@ -105,12 +169,13 @@ const AAPProvisionButton = (props: {
   onClick: (() => void) | undefined;
   title: string;
   subtitle: string;
+  statusText: string;
 }) => {
   return (
     <>
       <TextContent>
         <Text component={TextVariants.p}>
-          <b>Note:</b> instance might take up to 30 minutes to provision.
+          <b>Note:</b> Instance might take up to 30 minutes to {props.statusText}.
           <span style={{ color: 'red' }}>*</span>
         </Text>
       </TextContent>
@@ -131,7 +196,7 @@ const AAPProvisionButton = (props: {
           },
         }}
       >
-        Provision
+        {capitalize(props.statusText)}
       </AnalyticsButton>
     </>
   );
@@ -146,6 +211,13 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
   const handleCloseAAPModal = () => {
     setShowAAPModal(false);
   };
+  const [showDeleteModal, setShowDeleteModal] = React.useState(false);
+  const handleShowDeleteModal = () => {
+    setShowDeleteModal(true);
+  };
+  const handleCloseDeleteModal = () => {
+    setShowDeleteModal(false);
+  };
   const services = useSandboxServices(handleShowAAPModal);
   const disableAI = useFlag('platform.sandbox.openshift-ai-disabled');
   const { getAAPData, getDeployments, getStatefulSets, getPersistentVolumeClaims } = useKubeApi();
@@ -156,6 +228,10 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
   const handleSetAAPCRError = (errorDetails: string) => {
     api.setError(errorDetails);
   };
+  const [provisioningLabel, setProvisioningLabel] = React.useState<string>(
+    ANSIBLE_PROVISIONING_LABEL,
+  );
+  const [loading, setLoading] = React.useState(false);
 
   async function deleteSecretsAndPVCs(
     k8sObjects: StatefulSetData | DeploymentData | void,
@@ -251,6 +327,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     }
     api.setError(undefined);
 
+    setLoading(true);
     // TODO: this might be removed in the future,
     // Let's get the deployments before deleting the AAP CR
     // and the statefulsets, so that we can retrieve the names of secrets and pvcs used by those.
@@ -285,6 +362,8 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     await deleteSecretsAndPVCs(aapDeployments, signupData.defaultUserNamespace);
     await deleteSecretsAndPVCs(aapStatefulSets, signupData.defaultUserNamespace);
     await deletePVCsForSTS(aapStatefulSets, signupData.defaultUserNamespace);
+    handleCloseDeleteModal();
+    setLoading(false);
   };
 
   const getAAPDataFn = React.useCallback(async () => {
@@ -302,6 +381,9 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
       const data = await getAAPData(signupData.defaultUserNamespace);
       const status = getReadyCondition(data, handleSetAAPCRError);
       setAAPStatus(status);
+      if (status === ANSIBLE_IDLED) {
+        setProvisioningLabel(ANSIBLE_REPROVISIONING_LABEL);
+      }
     } catch (e) {
       api.setError(errorMessage(e));
     }
@@ -347,9 +429,14 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
     switch (o.status) {
       case ANSIBLE_PROVISIONING_STATUS:
       case ANSIBLE_UNKNOWN_STATUS:
-        return <AAPCancelProvisioningButton onClick={deleteAAPInstance} />;
+        return <AAPDeleteButton onClick={handleShowDeleteModal} onClose={handleCloseDeleteModal} />;
       case ANSIBLE_READY_STATUS:
-        return <AAPLaunchButton onClick={handleShowAAPModal} />;
+        return (
+          <>
+            <AAPLaunchButton onClick={handleShowAAPModal} />
+            <AAPDeleteButton onClick={handleShowDeleteModal} onClose={handleCloseAAPModal} />
+          </>
+        );
       default:
         return (
           <AAPProvisionButton
@@ -358,6 +445,9 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
             onClick={o.onClickFunc}
             title={o.title}
             subtitle={o.subtitle}
+            statusText={
+              provisioningLabel === ANSIBLE_REPROVISIONING_LABEL ? 'reprovision' : 'provision'
+            }
           />
         );
     }
@@ -365,8 +455,21 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
 
   return (
     <>
-      {showAAPModal ? <AAPModal initialStatus={''} onClose={handleCloseAAPModal} /> : null}
-      <Gallery hasGutter minWidths={{ default: '330px' }}>
+      {showAAPModal ? (
+        <AAPModal
+          initialStatus={''}
+          provisioningLabel={provisioningLabel || ANSIBLE_PROVISIONING_LABEL}
+          onClose={handleCloseAAPModal}
+        />
+      ) : null}
+      {showDeleteModal ? (
+        <AAPDeleteModal
+          onClose={handleCloseDeleteModal}
+          onClick={deleteAAPInstance}
+          isLoading={loading}
+        />
+      ) : null}
+      <Gallery hasGutter minWidths={{ default: '400px' }}>
         {services.map((service) => {
           const shouldDisableAI = service.id === OPENSHIFT_AI_ID && disableAI;
 
@@ -404,6 +507,7 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
                 buttonsFunc={service.id == ANSIBLE_ID ? AAPButtonsFunc : defaultLaunchButton}
                 status={service.id == ANSIBLE_ID ? AAPStatus : ''}
                 helperText={service.id == ANSIBLE_ID ? getAAPStatusTextComponent : helperTextFunc}
+                provisioningLabel={provisioningLabel}
               />
             </GalleryItem>
           );
@@ -413,25 +517,37 @@ const ServiceCatalog = ({ isDisabled }: Props) => {
   );
 };
 
-function getAAPStatusTextComponent(status?: string): React.ReactElement {
+const DeletionNote = () => {
+  return (
+    <TextContent className={'pf-v5-u-mb-md'}>
+      <Text component={TextVariants.p}>
+        <b>Note:</b> Deleting your AAP instance will result in any work being lost.
+      </Text>
+    </TextContent>
+  );
+};
+
+function getAAPStatusTextComponent(status: string, provisioningLabel: string): React.ReactElement {
   switch (status) {
-    case 'provisioning':
-    case 'unknown':
+    case ANSIBLE_PROVISIONING_STATUS:
+    case ANSIBLE_UNKNOWN_STATUS:
       return (
         <>
+          <DeletionNote />
           <TextContent>
             <Text component={TextVariants.p}>
               <Spinner className={'pf-v5-u-mr-sm'} size="sm" aria-label="Provisioning" />
-              Provisioning...
+              {capitalize(provisioningLabel)}...
             </Text>
           </TextContent>
           <br />
         </>
       );
 
-    case 'ready':
+    case ANSIBLE_READY_STATUS:
       return (
         <>
+          <DeletionNote />
           <TextContent>
             <Text component={TextVariants.p}>
               <Icon className={'pf-v5-u-mr-sm'} status="success">

@@ -6,6 +6,12 @@ import useRegistrationService from '../../../hooks/useRegistrationService';
 import { Buffer } from 'buffer';
 
 import yamlParse from 'yaml';
+import { ANSIBLE_PROVISIONING_STATUS, ANSIBLE_UNKNOWN_STATUS } from '../../../utils/conditions';
+import {
+  ANSIBLE_PROVISIONING_LABEL,
+  ANSIBLE_REPROVISIONING_LABEL,
+} from '../../ServiceCatalog/ServiceCatalog';
+import { capitalize } from 'lodash-es';
 
 const mockedAAPCR = yamlParse.parse(`
 apiVersion: v1
@@ -77,15 +83,17 @@ describe('AnsibleAutomationPlatformModal', () => {
     getSignupDataMock = signupService.getSignupData as jest.Mock;
   });
 
-  function requiredModalTextWhenProvisioning() {
+  function requiredModalTextWhenProvisioning(provisioningLabel: string) {
     // title should be there
-    const modalTitle = screen.getByText('Provisioning Ansible Automation Platform (AAP) instance');
+    const modalTitle = screen.getByText(
+      `${provisioningLabel} Ansible Automation Platform (AAP) instance`,
+    );
     expect(modalTitle).toBeDefined();
     // modal content should be there
     const { getByText } = within(screen.getByTestId('modal-content'));
     expect(
       getByText(
-        'Your AAP instance might take up to 30 minutes to provision. Once ready, your instance will remain active for 12 hours.',
+        `${provisioningLabel} can take up to 30 minutes. When ready, your instance will remain active for several hours.`,
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'AAP documentation' })).toHaveAttribute(
@@ -102,13 +110,36 @@ describe('AnsibleAutomationPlatformModal', () => {
   }
 
   it('modal should say that provisioning is in progress when initialStatus is unknown', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
-    requiredModalTextWhenProvisioning();
+    render(
+      <AnsibleAutomationPlatformModal
+        onClose={mockCallBack}
+        initialStatus={ANSIBLE_UNKNOWN_STATUS}
+        provisioningLabel={ANSIBLE_PROVISIONING_LABEL}
+      />,
+    );
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_PROVISIONING_LABEL));
   });
 
   it('modal should say that provisioning is in progress when initialStatus in provisioning', () => {
-    render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="provisioning" />);
-    requiredModalTextWhenProvisioning();
+    render(
+      <AnsibleAutomationPlatformModal
+        onClose={mockCallBack}
+        initialStatus={ANSIBLE_PROVISIONING_STATUS}
+        provisioningLabel={ANSIBLE_PROVISIONING_LABEL}
+      />,
+    );
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_PROVISIONING_LABEL));
+  });
+
+  it('modal should say that reprovisioning un-idling existing instance', () => {
+    render(
+      <AnsibleAutomationPlatformModal
+        onClose={mockCallBack}
+        initialStatus={ANSIBLE_PROVISIONING_STATUS}
+        provisioningLabel={ANSIBLE_REPROVISIONING_LABEL}
+      />,
+    );
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_REPROVISIONING_LABEL));
   });
 
   it('should render when AAP is ready', async () => {
@@ -127,10 +158,16 @@ describe('AnsibleAutomationPlatformModal', () => {
     });
     getAAPDataMock.mockReturnValue(mockedAAPCR);
     act(() => {
-      render(<AnsibleAutomationPlatformModal onClose={mockCallBack} initialStatus="unknown" />);
+      render(
+        <AnsibleAutomationPlatformModal
+          onClose={mockCallBack}
+          initialStatus={ANSIBLE_UNKNOWN_STATUS}
+          provisioningLabel={ANSIBLE_PROVISIONING_LABEL}
+        />,
+      );
     });
     // Modal is still in provisioning mode
-    requiredModalTextWhenProvisioning();
+    requiredModalTextWhenProvisioning(capitalize(ANSIBLE_PROVISIONING_LABEL));
     // once we retrieve the AAP CR with the ready status,
     // the open UI button and credentials should be rendered
     jest.advanceTimersByTime(2000);
@@ -146,7 +183,7 @@ describe('AnsibleAutomationPlatformModal', () => {
       // copy password button should be there
       expect(screen.queryByRole('Copy password')).toBeDefined();
       // open UI button should be there
-      const openAAPUIButton = screen.queryByText('Go to Ansible Automation Platform');
+      const openAAPUIButton = screen.queryByText('Log in to Ansible Automation Platform');
       // when clicked, it should open the UI link from the AAP CR
       openAAPUIButton?.click();
       expect(window.open).toHaveBeenCalledTimes(1);
