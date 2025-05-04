@@ -1,6 +1,4 @@
 import { randomIntFromInterval, redirectUser } from '../canary-deployment';
-import useKubeApi from '../../hooks/useKubeApi';
-import useRegistrationService from '../../hooks/useRegistrationService';
 
 describe('canary-deployment', () => {
 
