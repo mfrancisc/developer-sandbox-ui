@@ -1,6 +1,7 @@
-let RHDH_SANDBOX_UI_FQDN = 'https://sandbox.redhat.com';
+const RHDH_SANDBOX_UI_FQDN = 'https://sandbox.redhat.com';
 
-export const randomIntFromInterval = (min: number, max: number): number => { // min and max included
+export const randomIntFromInterval = (min: number, max: number): number => {
+  // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
@@ -8,13 +9,13 @@ export const redirectUser = (userWeightValue: number, weightThreshold: number) =
   if (userWeightValue <= weightThreshold) {
     console.log('user will be redirected to new UI');
     window.location.href = RHDH_SANDBOX_UI_FQDN;
-    return
+    return;
   }
   console.log('user will NOT be redirected to new UI.');
 };
 
 export const canaryDeploymentCheck = (canaryWeightThreshold: number) => {
-// check if user already has the UI canary deployment weight
+  // check if user already has the UI canary deployment weight
   const UICanaryWeightJson = localStorage.getItem('dev-sandbox.ui-canary-weight');
   if (UICanaryWeightJson == null) {
     // generate a new rand number for the user

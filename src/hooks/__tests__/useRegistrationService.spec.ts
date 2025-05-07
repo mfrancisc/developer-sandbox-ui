@@ -2,9 +2,9 @@ import useRegistrationService from '../useRegistrationService';
 import {
   completePhoneVerification,
   getSignupData,
+  getUIConfigData,
   initiatePhoneVerification,
   signup,
-  getUIConfigData,
 } from '../../services/registration-service';
 
 const axiosInstanceMock = {};

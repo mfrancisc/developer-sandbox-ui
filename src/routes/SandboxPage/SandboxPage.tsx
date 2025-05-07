@@ -4,7 +4,11 @@ import { Bullseye } from '@patternfly/react-core/dist/dynamic/layouts/Bullseye';
 import { Flex } from '@patternfly/react-core/dist/dynamic/layouts/Flex';
 import { PageSection } from '@patternfly/react-core/dist/dynamic/components/Page';
 import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
-import { Text, TextContent, TextVariants } from '@patternfly/react-core/dist/dynamic/components/Text';
+import {
+  Text,
+  TextContent,
+  TextVariants,
+} from '@patternfly/react-core/dist/dynamic/components/Text';
 import SandboxPageBanner from '../../components/PageBanner/SandboxPageBanner';
 import HowItWorksCard from '../../components/HowItWorksCard/HowItWorksCard';
 import GetStartedCard from '../../components/GetStartedCard/GetStartedCard';
@@ -22,10 +26,9 @@ const SandboxPage = () => {
    the others will be using the current UI.
    The threshold can be configured in the backend so that a bigger/smaller number of users can be routed to the new UI.
    ***/
-  const loadUIConfig = async function() {
+  const loadUIConfig = async function () {
     console.log('loading ui config');
-    const { getUIConfigData } =
-      useRegistrationService();
+    const { getUIConfigData } = useRegistrationService();
     const uiConfigData = await getUIConfigData();
     if (uiConfigData == undefined) {
       console.log('Unable to load uiconfig. Got undefined response.');
@@ -36,55 +39,57 @@ const SandboxPage = () => {
   };
   /** END canary UI deployment logic **/
 
-  try {
-    loadUIConfig();
-  } catch (e) {
-    console.log('Unable to retrieve uiConfigData. Got error:', e);
-  } finally {
-    const showOverview = status !== 'ready';
-    return (
-      <>
-        <SandboxPageBanner />
-        <PageSection className='pf-v5-u-p-xl'>
-          {status === 'unknown' ? (
-            <Bullseye>
-              <Spinner />
-            </Bullseye>
-          ) : (
-            <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXl' }}>
-              {error ? (
-                <Alert
-                  title='An error occurred'
-                  variant={AlertVariant.danger}
-                  className='pf-v5-u-mb-lg'
-                  style={{ boxShadow: 'var(--pf-v5-global--BoxShadow--sm)' }}
-                >
-                  {error}
-                </Alert>
-              ) : null}
-              {showOverview ? (
-                <>
-                  <GetStartedCard />
-                  <HowItWorksCard />
-                </>
-              ) : (
-                <>
-                  <TextContent>
-                    <Text component={TextVariants.h1}>Available services</Text>
-                    <Text component={TextVariants.p}>
-                      Now that your Sandbox is activated, these are all the cool things that are
-                      available to you, right in your Sandbox!
-                    </Text>
-                  </TextContent>
-                  <ServiceCatalog />
-                </>
-              )}
-            </Flex>
-          )}
-        </PageSection>
-      </>
-    );
-  }
+  (async () => {
+    try {
+      await loadUIConfig();
+    } catch (e) {
+      console.log('Unable to retrieve uiConfigData. Got error:', e);
+    }
+  })();
+
+  const showOverview = status !== 'ready';
+  return (
+    <>
+      <SandboxPageBanner />
+      <PageSection className="pf-v5-u-p-xl">
+        {status === 'unknown' ? (
+          <Bullseye>
+            <Spinner />
+          </Bullseye>
+        ) : (
+          <Flex direction={{ default: 'column' }} spaceItems={{ default: 'spaceItemsXl' }}>
+            {error ? (
+              <Alert
+                title="An error occurred"
+                variant={AlertVariant.danger}
+                className="pf-v5-u-mb-lg"
+                style={{ boxShadow: 'var(--pf-v5-global--BoxShadow--sm)' }}
+              >
+                {error}
+              </Alert>
+            ) : null}
+            {showOverview ? (
+              <>
+                <GetStartedCard />
+                <HowItWorksCard />
+              </>
+            ) : (
+              <>
+                <TextContent>
+                  <Text component={TextVariants.h1}>Available services</Text>
+                  <Text component={TextVariants.p}>
+                    Now that your Sandbox is activated, these are all the cool things that are
+                    available to you, right in your Sandbox!
+                  </Text>
+                </TextContent>
+                <ServiceCatalog />
+              </>
+            )}
+          </Flex>
+        )}
+      </PageSection>
+    </>
+  );
 };
 
 export default SandboxPage;
