@@ -1,3 +1,5 @@
+let RHDH_SANDBOX_UI_FQDN = 'https://sandbox.redhat.com';
+
 export const randomIntFromInterval = (min: number, max: number): number => { // min and max included
   return Math.floor(Math.random() * (max - min + 1) + min);
 };
@@ -5,7 +7,7 @@ export const randomIntFromInterval = (min: number, max: number): number => { // 
 export const redirectUser = (userWeightValue: number, weightThreshold: number) => {
   if (userWeightValue <= weightThreshold) {
     console.log('user will be redirected to new UI');
-    window.location.href = 'https://sandbox.redhat.com';
+    window.location.href = RHDH_SANDBOX_UI_FQDN;
     return
   }
   console.log('user will NOT be redirected to new UI.');
