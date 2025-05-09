@@ -14,38 +14,9 @@ import HowItWorksCard from '../../components/HowItWorksCard/HowItWorksCard';
 import GetStartedCard from '../../components/GetStartedCard/GetStartedCard';
 import ServiceCatalog from '../../components/ServiceCatalog/ServiceCatalog';
 import { useRegistrationContext } from '../../hooks/useRegistrationContext';
-import useRegistrationService from '../../hooks/useRegistrationService';
-import { canaryDeploymentCheck } from '../../utils/canary-deployment';
 
 const SandboxPage = () => {
   const [{ status, error }] = useRegistrationContext();
-
-  /*** CANARY Deployment for redirecting users to new UI
-   Users visiting the first time the UI will get assigned with a random number, the number will be stored in localstorage and reused everytime the user opens the UI.
-   The users that gets a number that is lower than the canary weight threshold, they will be redirected to the new ui,
-   the others will be using the current UI.
-   The threshold can be configured in the backend so that a bigger/smaller number of users can be routed to the new UI.
-   ***/
-  const loadUIConfig = async function () {
-    console.log('loading ui config');
-    const { getUIConfigData } = useRegistrationService();
-    const uiConfigData = await getUIConfigData();
-    if (uiConfigData == undefined) {
-      console.log('Unable to load uiconfig. Got undefined response.');
-    } else {
-      console.log('uiCanaryDeploymentWeight found: ', uiConfigData.uiCanaryDeploymentWeight);
-      canaryDeploymentCheck(uiConfigData.uiCanaryDeploymentWeight);
-    }
-  };
-  /** END canary UI deployment logic **/
-
-  (async () => {
-    try {
-      await loadUIConfig();
-    } catch (e) {
-      console.log('Unable to retrieve uiConfigData. Got error:', e);
-    }
-  })();
 
   const showOverview = status !== 'ready';
   return (
