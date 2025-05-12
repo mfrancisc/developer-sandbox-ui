@@ -76,9 +76,9 @@ const Routing = () => {
     [getUIConfigData, setUIConfig],
   );
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     loadUIConfig();
-  }, [uiconfig]);
+  }, []);
   /** END canary UI deployment logic **/
 
   return (
