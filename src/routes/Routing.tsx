@@ -3,7 +3,6 @@ import { Navigate, Route as RouterRoute, Routes as RouterRoutes } from 'react-ro
 import { Bullseye } from '@patternfly/react-core/dist/dynamic/layouts/Bullseye';
 import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
 import { linkBasename } from '../utils/utils';
-import { UiConfigData } from '../types';
 import useRegistrationService from '../hooks/useRegistrationService';
 import { canaryDeploymentCheck } from '../utils/canary-deployment';
 
@@ -56,7 +55,6 @@ const renderRoutes = (routes: RouteType[] = []) =>
 
 const Routing = () => {
   const renderedRoutes = useMemo(() => renderRoutes(routes), [routes]);
-  const [uiconfig, setUIConfig] = React.useState<UiConfigData | undefined>();
   const { getUIConfigData } = useRegistrationService();
 
   /*** CANARY Deployment for redirecting users to new UI
@@ -71,14 +69,13 @@ const Routing = () => {
       if (uiConfigData != undefined) {
         canaryDeploymentCheck(uiConfigData.uiCanaryDeploymentWeight);
       }
-      setUIConfig(uiConfigData);
     },
-    [getUIConfigData, setUIConfig],
+    [getUIConfigData],
   );
 
-  React.useLayoutEffect(() => {
+  React.useEffect(() => {
     loadUIConfig();
-  }, [uiconfig]);
+  }, []);
   /** END canary UI deployment logic **/
 
   return (
